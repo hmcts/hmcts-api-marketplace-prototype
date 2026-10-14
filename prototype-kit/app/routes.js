@@ -258,6 +258,16 @@ async function getApplicationsFor (oid) {
   }))
 }
 
+// One application, but only if it belongs to this person: the Client ID alone must never be enough to act on it.
+async function getApplicationFor (oid, clientId) {
+  if (!db || !oid) return null
+  const { rows } = await query(
+    'select id, name, environment, client_id from applications where owner_oid = $1 and client_id = $2',
+    [oid, clientId]
+  )
+  return rows[0] || null
+}
+
 // One row per (application, API) pair - see the conversation this was
 // designed in: one Client ID/Secret per application, but a SEPARATE
 // Subscription Key per API it calls. publisher_id is the APIM Product id and
@@ -454,7 +464,7 @@ async function getOnboardingToken () {
 }
 
 async function graphRequest (accessToken, method, path, body) {
-  const res = await fetch(`https://graph.microsoft.com/v1.0${path}`, {
+  const res = await fetch(`${process.env.GRAPH_BASE_URL || 'https://graph.microsoft.com/v1.0'}${path}`, {
     method,
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -674,6 +684,81 @@ router.post('/auth/register-app/check-answers', async (req, res) => {
       error: 'Something went wrong creating the application. Please try again.'
     })
   }
+})
+
+// ------------------------------------------------- Regenerate a lost client secret
+//
+// A client secret is shown once, when the application is created, and never again. If it is lost, the person
+// regenerates it: a new secret is created in Entra first (so there is no moment without a working one), then the
+// secrets that were there before are removed, so the lost one stops working. Asked to confirm first, because
+// anything still using the old secret stops working. Only the person who owns the application can do it.
+const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+async function ownedApplicationOrNull (oid, clientId) {
+  if (!GUID.test(clientId || '')) return null
+  return getApplicationFor(oid, clientId)
+}
+
+function applicationNotFound (res) {
+  return res.status(404).render('auth/error', {
+    message: 'Application not found.',
+    detail: 'It does not exist, or it does not belong to you.'
+  })
+}
+
+router.get('/auth/applications/:clientId/regenerate', async (req, res) => {
+  let application
+  try {
+    application = await ownedApplicationOrNull(req.query.oid, req.params.clientId)
+  } catch (err) {
+    return renderDbError(res, err)
+  }
+  if (!application) return applicationNotFound(res)
+  res.render('auth/regenerate-secret', { oid: req.query.oid, application })
+})
+
+router.post('/auth/applications/:clientId/regenerate', async (req, res) => {
+  const oid = req.body.oid
+  let application
+  try {
+    application = await ownedApplicationOrNull(oid, req.params.clientId)
+  } catch (err) {
+    return renderDbError(res, err)
+  }
+  if (!application) return applicationNotFound(res)
+
+  let added
+  const failedToRemove = []
+  try {
+    const accessToken = await getOnboardingToken()
+    const entraApp = await graphRequest(accessToken, 'GET',
+      `/applications(appId='${application.client_id}')?$select=id,passwordCredentials`)
+    const before = entraApp.passwordCredentials || []
+    added = await graphRequestWithRetry(accessToken, 'POST', `/applications/${entraApp.id}/addPassword`, {
+      passwordCredential: { displayName: 'api-marketplace-regenerated' }
+    })
+    for (const credential of before) {
+      try {
+        await graphRequest(accessToken, 'POST', `/applications/${entraApp.id}/removePassword`, { keyId: credential.keyId })
+      } catch (err) {
+        failedToRemove.push(credential.keyId)
+        console.error('[regenerate] could not remove an old secret on %s: %s', application.client_id, err.message)
+      }
+    }
+    console.log('[regenerate] new secret for %s; removed %d of %d old', application.client_id, before.length - failedToRemove.length, before.length)
+  } catch (err) {
+    console.error('[regenerate] failed for %s: %s', application.client_id, err.message)
+    return res.status(502).render('auth/error', { message: 'The client secret could not be regenerated.', detail: err.message })
+  }
+
+  // The new secret is on this page and nowhere else, so it must not be kept by the browser or any cache.
+  res.set('Cache-Control', 'no-store')
+  res.render('auth/regenerate-secret-done', {
+    oid,
+    application,
+    clientSecret: added.secretText,
+    failedToRemove: failedToRemove.length
+  })
 })
 
 module.exports = router

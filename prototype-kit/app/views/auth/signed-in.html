@@ -49,6 +49,13 @@
             <dd class="govuk-summary-list__value">{{ app.client_id }}</dd>
           </div>
           <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Client Secret</dt>
+            <dd class="govuk-summary-list__value">
+              Shown once, when the application was created.
+              <a class="govuk-link" href="/auth/applications/{{ app.client_id }}/regenerate?oid={{ oid }}">Lost it? Regenerate the client secret<span class="govuk-visually-hidden"> for {{ app.name }}</span></a>
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Created</dt>
             <dd class="govuk-summary-list__value">{{ app.created_at }}</dd>
           </div>
