@@ -345,6 +345,32 @@ async function backend (req, method, path, body) {
   }
 }
 
+// Registering an application, or anything else that changes one, needs the marketplace service's say-so, and
+// gets it automatically: the service checks the person's email domain against the pre-approved list. A person on
+// an unknown domain is stopped here, before anything is created in Entra, and nobody approves them by hand.
+// Only when BACKEND_URL is set; without it the prototype behaves as it always did. It also refuses a request that
+// names a different person (oid) from the one who is signed in.
+async function requireApprovedDomain (req, res, next) {
+  if (!BACKEND_URL) return next()
+  if (!req.cookies.entra_id_token) return res.redirect('/auth/entra')
+  const me = await backend(req, 'GET', '/api/entra/me')
+  if (me.status !== 200) {
+    const refused = me.status === 403
+    return res.status(refused ? 403 : 502).render('auth/error', {
+      message: refused
+        ? 'Your email domain is not approved for the API Marketplace, so you cannot register an application.'
+        : 'The marketplace could not confirm that your organisation is approved.',
+      detail: me.body.error
+    })
+  }
+  const claimed = (req.body && req.body.oid) || req.query.oid
+  if (claimed && claimed !== me.body.oid) {
+    return res.status(403).render('auth/error', { message: 'That is not the person who is signed in.' })
+  }
+  next()
+}
+router.use('/auth/register-app', requireApprovedDomain)
+
 router.get('/auth/callback', async (req, res) => {
   const { code, state, error, error_description: errorDescription } = req.query
 
