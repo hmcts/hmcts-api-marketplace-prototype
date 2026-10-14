@@ -40,25 +40,17 @@
 
     {% if orgCheck %}
     <h2 class="govuk-heading-l">Organisation check</h2>
-    <p class="govuk-body">The marketplace service validated your Entra token itself and decided from your email domain.</p>
+    <p class="govuk-body">The marketplace service validated your Entra token itself and checked your email domain against its list of pre-approved domains. Nobody approves individuals.</p>
 
     {% if orgCheck.me.status == 200 %}
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">Status</dt>
-          <dd class="govuk-summary-list__value">
-            {% if orgCheck.me.body.status == "ACTIVE" %}
-              <strong class="govuk-tag govuk-tag--green">ACTIVE</strong>
-            {% elif orgCheck.me.body.status == "HELD" %}
-              <strong class="govuk-tag govuk-tag--red">HELD</strong> waiting for an admin, or for your domain to be approved
-            {% else %}
-              <strong class="govuk-tag govuk-tag--grey">{{ orgCheck.me.body.status }}</strong>
-            {% endif %}
-          </dd>
+          <dt class="govuk-summary-list__key">Result</dt>
+          <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--green">{{ orgCheck.me.body.status }}</strong> let in automatically</dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Organisation</dt>
-          <dd class="govuk-summary-list__value">{{ orgCheck.me.body.organisation or "none yet" }}</dd>
+          <dd class="govuk-summary-list__value">{{ orgCheck.me.body.organisation }}</dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Role</dt>
@@ -80,12 +72,12 @@
         <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
         <strong class="govuk-warning-text__text">
           <span class="govuk-visually-hidden">Warning</span>
-          The marketplace service answered {{ orgCheck.me.status }}: {{ orgCheck.me.body.error }}
+          Refused ({{ orgCheck.me.status }}): {{ orgCheck.me.body.error }}
         </strong>
       </div>
     {% endif %}
 
-    <p class="govuk-body"><a class="govuk-link" href="/auth/admin">Admin: approve organisations and people</a></p>
+    <p class="govuk-body"><a class="govuk-link" href="/auth/admin">Admin: the approved domains, and suspending a leaver</a></p>
     {% endif %}
 
     <h2 class="govuk-heading-l">Your applications</h2>

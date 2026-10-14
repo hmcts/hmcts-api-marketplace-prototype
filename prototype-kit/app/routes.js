@@ -318,9 +318,10 @@ router.get('/auth/entra', (req, res) => {
 // ------------------------------------- Organisation approval demo (marketplace service)
 //
 // When BACKEND_URL is set (for example http://localhost:8083), the signed-in page asks the marketplace
-// service who this person is and whether their organisation is approved, sending the Entra ID token as a bearer
-// token. The service validates the token itself and decides from the email domain: ACTIVE on an approved domain,
-// HELD on any other. The token is kept in an HttpOnly cookie, only so the admin pages can call the service as
+// service who this person is and whether their email domain is on the pre-approved list, sending the Entra ID
+// token as a bearer token. The service validates the token itself and decides from the email domain: a listed
+// domain is let in automatically, any other is refused (403 DOMAIN_NOT_APPROVED). Nobody approves individuals.
+// The token is kept in an HttpOnly cookie, only so the admin pages can call the service as
 // the same person. Demo only: not for the public site, and nothing here is exported.
 const BACKEND_URL = process.env.BACKEND_URL
 
@@ -463,15 +464,14 @@ router.get('/auth/signed-in', async (req, res) => {
   res.render('auth/signed-in', { oid: req.query.oid, name: req.query.name, email: req.query.email, applications: applicationsWithSubs, orgCheck })
 })
 
-// Admin pages for the organisation approval demo: the people waiting, the approved organisations and their
-// domains. Each action is one call to the marketplace service as the signed-in person, who must be an admin there
-// (ADMIN_EMAILS); anyone else is told it does not exist.
+// Admin pages for the organisation approval demo: the pre-approved organisations and their domains, and the
+// people who are in (to suspend a leaver). Each action is one call to the marketplace service as the signed-in
+// person, who must be an admin there (ADMIN_EMAILS); anyone else is told it does not exist.
 router.get('/auth/admin', async (req, res) => {
-  const users = await backend(req, 'GET', '/api/admin/users?status=HELD')
   const organisations = await backend(req, 'GET', '/api/admin/organisations')
-  const suspended = await backend(req, 'GET', '/api/admin/users?status=SUSPENDED')
   const active = await backend(req, 'GET', '/api/admin/users?status=ACTIVE')
-  res.render('auth/admin', { users, organisations, suspended, active, notice: req.query.notice })
+  const suspended = await backend(req, 'GET', '/api/admin/users?status=SUSPENDED')
+  res.render('auth/admin', { organisations, active, suspended, notice: req.query.notice })
 })
 
 async function adminAction (req, res, method, path, body, success) {
@@ -482,15 +482,16 @@ async function adminAction (req, res, method, path, body, success) {
 }
 
 router.post('/auth/admin/organisations', (req, res) =>
-  adminAction(req, res, 'POST', '/api/admin/organisations', { name: req.body.name }, 'Organisation created.'))
+  adminAction(req, res, 'POST', '/api/admin/organisations', { name: req.body.name }, 'Organisation added.'))
 
 router.post('/auth/admin/domains', (req, res) =>
   adminAction(req, res, 'POST', `/api/admin/organisations/${encodeURIComponent(req.body.organisationId)}/domains`,
-    { domain: req.body.domain }, 'Domain listed. People held on it are now active.'))
+    { domain: req.body.domain }, 'Domain approved: everyone on it is let in from their next call.'))
 
-router.post('/auth/admin/users/:id/approve', (req, res) =>
-  adminAction(req, res, 'POST', `/api/admin/users/${encodeURIComponent(req.params.id)}/approve`,
-    { organisationId: Number(req.body.organisationId) }, 'Approved.'))
+router.post('/auth/admin/domains/remove', (req, res) =>
+  adminAction(req, res, 'DELETE',
+    `/api/admin/organisations/${encodeURIComponent(req.body.organisationId)}/domains/${encodeURIComponent(req.body.domain)}`,
+    null, 'Domain taken off the list: its people are refused from their next call.'))
 
 router.post('/auth/admin/users/:id/suspend', (req, res) =>
   adminAction(req, res, 'POST', `/api/admin/users/${encodeURIComponent(req.params.id)}/suspend`, null, 'Suspended.'))

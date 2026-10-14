@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName = "Organisation approval admin" %}
+{% set pageName = "Approved domains admin" %}
 {% set section = "account" %}
 {% set breadcrumbs = [
   { text: "Home", href: "/" }
@@ -11,7 +11,8 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
 
-    <h1 class="govuk-heading-xl">Organisation approval</h1>
+    <h1 class="govuk-heading-xl">Approved domains</h1>
+    <p class="govuk-body">Anyone whose email address is on an approved domain is let in automatically. Anyone else is refused. There is no queue and nobody approves individuals.</p>
 
     {% if notice %}
       <div class="govuk-notification-banner" role="region" aria-labelledby="notice-title">
@@ -35,12 +36,11 @@
       </div>
     {% else %}
 
-    <h2 class="govuk-heading-l">Approved organisations</h2>
+    <h2 class="govuk-heading-l">Organisations and their approved domains</h2>
     {% if organisations.body.organisations.length %}
       <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Id</th>
             <th scope="col" class="govuk-table__header">Organisation</th>
             <th scope="col" class="govuk-table__header">Approved domains</th>
           </tr>
@@ -48,9 +48,17 @@
         <tbody class="govuk-table__body">
           {% for org in organisations.body.organisations %}
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell">{{ org.id }}</td>
             <td class="govuk-table__cell">{{ org.name }}</td>
-            <td class="govuk-table__cell">{% if org.domains.length %}{{ org.domains | join(", ") }}{% else %}<em>none</em>{% endif %}</td>
+            <td class="govuk-table__cell">
+              {% for domain in org.domains %}
+                <form method="post" action="/auth/admin/domains/remove" style="display:inline">
+                  <input type="hidden" name="organisationId" value="{{ org.id }}">
+                  <input type="hidden" name="domain" value="{{ domain }}">
+                  {{ domain }} <button class="govuk-link" style="background:none;border:0;cursor:pointer;text-decoration:underline">remove</button>
+                </form>
+                <br>
+              {% else %}<em>none</em>{% endfor %}
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -69,47 +77,16 @@
 
     <form method="post" action="/auth/admin/domains" class="govuk-!-margin-bottom-6">
       <div class="govuk-form-group">
-        <label class="govuk-label" for="dom-org">List a domain for an organisation (everyone held on it becomes active)</label>
+        <label class="govuk-label" for="dom-org">Approve a domain for an organisation</label>
         <select class="govuk-select" id="dom-org" name="organisationId">
           {% for org in organisations.body.organisations %}<option value="{{ org.id }}">{{ org.name }}</option>{% endfor %}
         </select>
         <input class="govuk-input govuk-input--width-20" id="dom-domain" name="domain" type="text" placeholder="example.gov.uk" aria-label="Domain">
       </div>
-      <button class="govuk-button" data-module="govuk-button">List domain</button>
+      <button class="govuk-button" data-module="govuk-button">Approve domain</button>
     </form>
 
-    <h2 class="govuk-heading-l">People waiting for approval</h2>
-    {% if users.body.users.length %}
-      <table class="govuk-table">
-        <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Person</th>
-            <th scope="col" class="govuk-table__header">Domain</th>
-            <th scope="col" class="govuk-table__header">Approve into</th>
-          </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-          {% for user in users.body.users %}
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell">{{ user.name }}<br>{{ user.email }}</td>
-            <td class="govuk-table__cell">{{ user.domain }}</td>
-            <td class="govuk-table__cell">
-              <form method="post" action="/auth/admin/users/{{ user.id }}/approve">
-                <select class="govuk-select" name="organisationId" aria-label="Organisation">
-                  {% for org in organisations.body.organisations %}<option value="{{ org.id }}">{{ org.name }}</option>{% endfor %}
-                </select>
-                <button class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">Approve</button>
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p class="govuk-body">Nobody is waiting.</p>
-    {% endif %}
-
-    <h2 class="govuk-heading-l">Active people</h2>
+    <h2 class="govuk-heading-l">People who are in</h2>
     {% if active.body.users.length %}
       <table class="govuk-table">
         <tbody class="govuk-table__body">
@@ -127,7 +104,7 @@
         </tbody>
       </table>
     {% else %}
-      <p class="govuk-body">Nobody is active yet.</p>
+      <p class="govuk-body">Nobody has signed in yet.</p>
     {% endif %}
 
     <h2 class="govuk-heading-l">Suspended</h2>
