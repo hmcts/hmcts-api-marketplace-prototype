@@ -315,6 +315,35 @@ router.get('/auth/entra', (req, res) => {
   res.redirect(url.toString())
 })
 
+// ------------------------------------- Organisation approval demo (marketplace service)
+//
+// When BACKEND_URL is set (for example http://localhost:8083), the signed-in page asks the marketplace
+// service who this person is and whether their organisation is approved, sending the Entra ID token as a bearer
+// token. The service validates the token itself and decides from the email domain: ACTIVE on an approved domain,
+// HELD on any other. The token is kept in an HttpOnly cookie, only so the admin pages can call the service as
+// the same person. Demo only: not for the public site, and nothing here is exported.
+const BACKEND_URL = process.env.BACKEND_URL
+
+async function backend (req, method, path, body) {
+  const token = req.cookies.entra_id_token
+  if (!BACKEND_URL || !token) {
+    return { status: 0, body: { error: 'BACKEND_URL is not set, or you are not signed in here.' } }
+  }
+  try {
+    const response = await fetch(BACKEND_URL + path, {
+      method,
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined
+    })
+    const text = await response.text()
+    let json
+    try { json = JSON.parse(text) } catch (err) { json = { error: text } }
+    return { status: response.status, body: json }
+  } catch (err) {
+    return { status: 0, body: { error: 'Could not reach the marketplace service: ' + err.message } }
+  }
+}
+
 router.get('/auth/callback', async (req, res) => {
   const { code, state, error, error_description: errorDescription } = req.query
 
@@ -379,6 +408,8 @@ router.get('/auth/callback', async (req, res) => {
     return renderDbError(res, err)
   }
 
+  if (BACKEND_URL) res.cookie('entra_id_token', tokenBody.id_token, { httpOnly: true, sameSite: 'lax' })
+
   const params = new URLSearchParams({ oid: payload.oid })
   if (payload.name) params.set('name', payload.name)
   if (email) params.set('email', email)
@@ -401,6 +432,7 @@ router.get('/auth/sign-out', (req, res) => {
   url.searchParams.set('client_id', ENTRA_CLIENT_ID)
   url.searchParams.set('post_logout_redirect_uri', new URL('/auth/signed-out', ENTRA_REDIRECT_URI).toString())
   res.clearCookie('entra_state')
+  res.clearCookie('entra_id_token')
   res.redirect(url.toString())
 })
 
@@ -421,8 +453,50 @@ router.get('/auth/signed-in', async (req, res) => {
     ...app,
     subscriptions: subscriptions.filter((s) => s.application_id === app.id)
   }))
-  res.render('auth/signed-in', { oid: req.query.oid, name: req.query.name, email: req.query.email, applications: applicationsWithSubs })
+  let orgCheck = null
+  if (BACKEND_URL) {
+    orgCheck = {
+      me: await backend(req, 'GET', '/api/entra/me'),
+      applications: await backend(req, 'GET', '/api/entra/applications')
+    }
+  }
+  res.render('auth/signed-in', { oid: req.query.oid, name: req.query.name, email: req.query.email, applications: applicationsWithSubs, orgCheck })
 })
+
+// Admin pages for the organisation approval demo: the people waiting, the approved organisations and their
+// domains. Each action is one call to the marketplace service as the signed-in person, who must be an admin there
+// (ADMIN_EMAILS); anyone else is told it does not exist.
+router.get('/auth/admin', async (req, res) => {
+  const users = await backend(req, 'GET', '/api/admin/users?status=HELD')
+  const organisations = await backend(req, 'GET', '/api/admin/organisations')
+  const suspended = await backend(req, 'GET', '/api/admin/users?status=SUSPENDED')
+  const active = await backend(req, 'GET', '/api/admin/users?status=ACTIVE')
+  res.render('auth/admin', { users, organisations, suspended, active, notice: req.query.notice })
+})
+
+async function adminAction (req, res, method, path, body, success) {
+  const result = await backend(req, method, path, body)
+  const ok = result.status >= 200 && result.status < 300
+  const notice = ok ? success : `Failed (${result.status}): ${result.body.error || 'no reason given'}`
+  res.redirect('/auth/admin?notice=' + encodeURIComponent(notice))
+}
+
+router.post('/auth/admin/organisations', (req, res) =>
+  adminAction(req, res, 'POST', '/api/admin/organisations', { name: req.body.name }, 'Organisation created.'))
+
+router.post('/auth/admin/domains', (req, res) =>
+  adminAction(req, res, 'POST', `/api/admin/organisations/${encodeURIComponent(req.body.organisationId)}/domains`,
+    { domain: req.body.domain }, 'Domain listed. People held on it are now active.'))
+
+router.post('/auth/admin/users/:id/approve', (req, res) =>
+  adminAction(req, res, 'POST', `/api/admin/users/${encodeURIComponent(req.params.id)}/approve`,
+    { organisationId: Number(req.body.organisationId) }, 'Approved.'))
+
+router.post('/auth/admin/users/:id/suspend', (req, res) =>
+  adminAction(req, res, 'POST', `/api/admin/users/${encodeURIComponent(req.params.id)}/suspend`, null, 'Suspended.'))
+
+router.post('/auth/admin/users/:id/reinstate', (req, res) =>
+  adminAction(req, res, 'POST', `/api/admin/users/${encodeURIComponent(req.params.id)}/reinstate`, null, 'Reinstated.'))
 
 // ------------------------------------------------- Client-onboarding prototype
 //

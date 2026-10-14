@@ -1,0 +1,160 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Organisation approval admin" %}
+{% set section = "account" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" }
+] %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <h1 class="govuk-heading-xl">Organisation approval</h1>
+
+    {% if notice %}
+      <div class="govuk-notification-banner" role="region" aria-labelledby="notice-title">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="notice-title">Result</h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">{{ notice }}</p>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if organisations.status != 200 %}
+      <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-visually-hidden">Warning</span>
+          The marketplace service answered {{ organisations.status }}: {{ organisations.body.error }}
+          (A 404 means you are not an admin there, or the switch is off.)
+        </strong>
+      </div>
+    {% else %}
+
+    <h2 class="govuk-heading-l">Approved organisations</h2>
+    {% if organisations.body.organisations.length %}
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Id</th>
+            <th scope="col" class="govuk-table__header">Organisation</th>
+            <th scope="col" class="govuk-table__header">Approved domains</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for org in organisations.body.organisations %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ org.id }}</td>
+            <td class="govuk-table__cell">{{ org.name }}</td>
+            <td class="govuk-table__cell">{% if org.domains.length %}{{ org.domains | join(", ") }}{% else %}<em>none</em>{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="govuk-body">No organisations yet.</p>
+    {% endif %}
+
+    <form method="post" action="/auth/admin/organisations" class="govuk-!-margin-bottom-6">
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="org-name">Add an organisation</label>
+        <input class="govuk-input govuk-input--width-20" id="org-name" name="name" type="text">
+      </div>
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button">Add organisation</button>
+    </form>
+
+    <form method="post" action="/auth/admin/domains" class="govuk-!-margin-bottom-6">
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="dom-org">List a domain for an organisation (everyone held on it becomes active)</label>
+        <select class="govuk-select" id="dom-org" name="organisationId">
+          {% for org in organisations.body.organisations %}<option value="{{ org.id }}">{{ org.name }}</option>{% endfor %}
+        </select>
+        <input class="govuk-input govuk-input--width-20" id="dom-domain" name="domain" type="text" placeholder="example.gov.uk" aria-label="Domain">
+      </div>
+      <button class="govuk-button" data-module="govuk-button">List domain</button>
+    </form>
+
+    <h2 class="govuk-heading-l">People waiting for approval</h2>
+    {% if users.body.users.length %}
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Person</th>
+            <th scope="col" class="govuk-table__header">Domain</th>
+            <th scope="col" class="govuk-table__header">Approve into</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for user in users.body.users %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ user.name }}<br>{{ user.email }}</td>
+            <td class="govuk-table__cell">{{ user.domain }}</td>
+            <td class="govuk-table__cell">
+              <form method="post" action="/auth/admin/users/{{ user.id }}/approve">
+                <select class="govuk-select" name="organisationId" aria-label="Organisation">
+                  {% for org in organisations.body.organisations %}<option value="{{ org.id }}">{{ org.name }}</option>{% endfor %}
+                </select>
+                <button class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">Approve</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="govuk-body">Nobody is waiting.</p>
+    {% endif %}
+
+    <h2 class="govuk-heading-l">Active people</h2>
+    {% if active.body.users.length %}
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for user in active.body.users %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ user.name }}<br>{{ user.email }}</td>
+            <td class="govuk-table__cell">{{ user.organisation }}</td>
+            <td class="govuk-table__cell">
+              <form method="post" action="/auth/admin/users/{{ user.id }}/suspend">
+                <button class="govuk-button govuk-button--warning govuk-!-margin-bottom-0" data-module="govuk-button">Suspend (leaver)</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="govuk-body">Nobody is active yet.</p>
+    {% endif %}
+
+    <h2 class="govuk-heading-l">Suspended</h2>
+    {% if suspended.body.users.length %}
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+          {% for user in suspended.body.users %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ user.name }}<br>{{ user.email }}</td>
+            <td class="govuk-table__cell">
+              <form method="post" action="/auth/admin/users/{{ user.id }}/reinstate">
+                <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Reinstate</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="govuk-body">Nobody is suspended.</p>
+    {% endif %}
+
+    {% endif %}
+
+    <p class="govuk-body"><a class="govuk-link" href="javascript:history.back()">Back</a> &middot; <a class="govuk-link" href="/auth/sign-out">Sign out</a></p>
+
+  </div>
+</div>
+
+{% endblock %}

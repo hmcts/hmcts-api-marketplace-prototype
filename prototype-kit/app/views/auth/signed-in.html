@@ -38,6 +38,56 @@
 
     <p class="govuk-body">This profile is now saved in Postgres, keyed by your oid &mdash; refresh this page or come back later and it's still there. Entra itself never held any of this; it only knows who you are, not organisation, role or which applications belong to you.</p>
 
+    {% if orgCheck %}
+    <h2 class="govuk-heading-l">Organisation check</h2>
+    <p class="govuk-body">The marketplace service validated your Entra token itself and decided from your email domain.</p>
+
+    {% if orgCheck.me.status == 200 %}
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Status</dt>
+          <dd class="govuk-summary-list__value">
+            {% if orgCheck.me.body.status == "ACTIVE" %}
+              <strong class="govuk-tag govuk-tag--green">ACTIVE</strong>
+            {% elif orgCheck.me.body.status == "HELD" %}
+              <strong class="govuk-tag govuk-tag--red">HELD</strong> waiting for an admin, or for your domain to be approved
+            {% else %}
+              <strong class="govuk-tag govuk-tag--grey">{{ orgCheck.me.body.status }}</strong>
+            {% endif %}
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Organisation</dt>
+          <dd class="govuk-summary-list__value">{{ orgCheck.me.body.organisation or "none yet" }}</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Role</dt>
+          <dd class="govuk-summary-list__value">{{ orgCheck.me.body.role }}</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key"><code>GET /api/entra/applications</code></dt>
+          <dd class="govuk-summary-list__value">
+            {% if orgCheck.applications.status == 200 %}
+              <strong class="govuk-tag govuk-tag--green">200</strong> allowed
+            {% else %}
+              <strong class="govuk-tag govuk-tag--red">{{ orgCheck.applications.status }}</strong> {{ orgCheck.applications.body.error }}
+            {% endif %}
+          </dd>
+        </div>
+      </dl>
+    {% else %}
+      <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-visually-hidden">Warning</span>
+          The marketplace service answered {{ orgCheck.me.status }}: {{ orgCheck.me.body.error }}
+        </strong>
+      </div>
+    {% endif %}
+
+    <p class="govuk-body"><a class="govuk-link" href="/auth/admin">Admin: approve organisations and people</a></p>
+    {% endif %}
+
     <h2 class="govuk-heading-l">Your applications</h2>
 
     {% if applications and applications.length %}
