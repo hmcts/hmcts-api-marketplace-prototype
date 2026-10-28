@@ -1,0 +1,16 @@
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% if catalogueUnavailable %}
+  {{ govukWarningText({
+    text: "The list of APIs could not be loaded just now. Try again in a few minutes.",
+    iconFallbackText: "Warning",
+    attributes: { id: "catalogue-unavailable" }
+  }) }}
+{% endif %}
+{{ govukCheckboxes({
+  name: "apis",
+  fieldset: { legend: { text: apisLegend, classes: "govuk-fieldset__legend--m" } },
+  hint: { text: "Each API you select gets its own subscription key." },
+  items: apiItems,
+  errorMessage: { text: errorFor.apis } if errorFor.apis
+}) }}

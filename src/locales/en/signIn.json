@@ -1,0 +1,9 @@
+{
+  "heading": "There is a problem signing you in",
+  "problemCancelled": "You were not signed in. If you meant to sign in, try again.",
+  "problemExpired": "Your sign in timed out or was started somewhere else. Try again from this page.",
+  "problemUnavailable": "Sign in is not available at the moment because the service could not be reached. Try again in a few minutes.",
+  "problemRejected": "We could not confirm who you are, so you have not been signed in. Try again, and contact us if this keeps happening.",
+  "tryAgainButton": "Try signing in again",
+  "helpHtml": "If this keeps happening, <a class=\"govuk-link\" href=\"/help\">contact the API Marketplace team</a>."
+}

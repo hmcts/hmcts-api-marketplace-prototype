@@ -1,0 +1,20 @@
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+<h2 class="govuk-heading-m">Access to the APIs</h2>
+{% if application.accessGranted %}
+  <p class="govuk-body" id="access-granted">{{ govukTag({ text: "Set up", classes: "govuk-tag--green" }) }}</p>
+{% else %}
+  <div id="application-access" data-access-url="/account/applications/{{ application.id }}/access" data-attempts="{{ accessAttempts }}" data-interval="{{ accessRetrySeconds }}">
+    <div id="access-pending">
+      {{ govukWarningText({
+        text: "These credentials will not work yet. Access to the APIs is still being set up, which can take a couple of minutes.",
+        iconFallbackText: "Warning"
+      }) }}
+    </div>
+    <p class="govuk-body" id="access-status" role="status" aria-live="polite"></p>
+    <form method="post" action="/account/applications/{{ application.id }}/access" id="check-access-form" novalidate>
+      {{ govukButton({ text: "Check access", classes: "govuk-button--secondary", attributes: { id: "check-access" } }) }}
+    </form>
+  </div>
+{% endif %}

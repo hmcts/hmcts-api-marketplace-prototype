@@ -1,0 +1,82 @@
+{
+  "title": "Cookies - HMCTS API Marketplace - GOV.UK",
+  "serviceName": "HMCTS API Marketplace",
+  "h1": "Cookies",
+  "p1": "Cookies are files saved on your phone, tablet or computer when you visit a website. Most websites need cookies to work properly.",
+  "p2": "This service uses cookies to:",
+  "bullets": [
+    "keep you signed in",
+    "store your cookie preferences",
+    "measure how you use the service so it can be improved"
+  ],
+  "h2": "How cookies are used in this service",
+  "caption": "Cookie details",
+  "name": "Name",
+  "purpose": "Purpose",
+  "expires": "Expires",
+  "cookiePreferences": "Your cookie preferences",
+  "saved": "Your cookie settings were saved",
+  "additionalCookies": "Government services may set additional cookies and, if so, will have their own cookie policy and banner.",
+  "homePageLink": "Go to homepage",
+  "language_": {
+    "header": "1. To keep you signed in",
+    "sessionDescription": "Keeps you signed in, and remembers your answers between the pages of a form",
+    "sessionDuration": "When you close your browser, or after 20 minutes without activity"
+  },
+  "preferences": {
+    "header": "2. To store your cookie preferences",
+    "appCookiePreferencesDescription": "Your cookie preferences",
+    "appCookiePreferencesDuration": "1 year"
+  },
+  "analytics": {
+    "header": "3. To measure website use",
+    "p1": "We use Google Analytics software to collect information about how you use this service. We do this to help make sure the service is meeting the needs of its users and to help us make improvements. We do not allow Google to use or share the data about how you use this site.",
+    "gaDescription": "A randomly generated reference used to identify unique users and inform referring sites, visitor and session counts",
+    "gaDuration": "2 years",
+    "gidDescription": "Used to distinguish users",
+    "gidDuration": "24 hours",
+    "gatDescription": "Used to throttle request rate",
+    "gatDuration": "1 minute"
+  },
+  "apm": {
+    "header": "4. To measure application performance",
+    "p1": "We use Dynatrace Software Intelligence Platform to provide an Application Performance Monitoring Service to collect information about how you use HMCTS services. We do this to monitor HMCTS services in order to resolve issues within our services as well as collect data on how our services can be improved. HMCTS store information about:",
+    "bullets": ["Site performance", "Website usage", "User behaviour"],
+    "p2": "Information is presented within the Application Performance Monitoring service for the purposes detailed above. We do not use or share the information for any other purpose. We do not allow Dynatrace to use or share the information for any other purposes.",
+    "dtCookieDescription": "Tracks a visit across multiple request",
+    "dtCookieDuration": "Session end",
+    "dtLatCDescription": "Measures server latency for performance monitoring",
+    "dtLatCDuration": "Session end",
+    "dtPCDescription": "Required to identify proper endpoints for beacon transmission; includes session ID for correlation",
+    "dtPCDuration": "Session end",
+    "dtSaDescription": "Intermediate store for page-spanning actions",
+    "dtSaDuration": "Session end",
+    "rxVisitorDescription": "Visitor ID to correlate sessions",
+    "rxVisitorDuration": "1 year",
+    "rxvtDescription": "Session timeout",
+    "rxvtDuration": "Session end"
+  },
+  "optionsHeader1": "Allow cookies that measure website use?",
+  "optionsHeader2": "Allow cookies that measure website application performance monitoring?",
+  "analyticsCookieOptions": [
+    {
+      "value": "on",
+      "text": "Use cookies that measure my website use"
+    },
+    {
+      "value": "off",
+      "text": "Do not use cookies that measure my website use"
+    }
+  ],
+  "performanceCookieOptions": [
+    {
+      "value": "on",
+      "text": "Use cookies that measure website application performance monitoring"
+    },
+    {
+      "value": "off",
+      "text": "Do not cookies that measure website application performance monitoring"
+    }
+  ],
+  "saveText": "Save"
+}

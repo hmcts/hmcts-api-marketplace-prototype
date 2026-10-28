@@ -1,0 +1,17 @@
+{
+  "name": "hmcts-api-marketplace-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static prototype of the HMCTS API Marketplace, for demonstration and discussion",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check:links": "node scripts/check-links.mjs"
+  },
+  "devDependencies": {
+    "govuk-frontend": "5.14.0",
+    "nunjucks": "3.2.4",
+    "sass": "1.83.4"
+  }
+}

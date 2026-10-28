@@ -1,0 +1,34 @@
+{
+  "pageTitle": "HMCTS API Marketplace - GOV.UK",
+  "heading": "HMCTS API Marketplace",
+  "lede": "Discover, request and integrate with HMCTS APIs.",
+  "signInButton": "Sign in to developer account",
+  "registerButton": "Create account",
+  "accountButton": "Go to your account",
+  "cardRows": [
+    [
+      {
+        "heading": "Getting started with our APIs",
+        "href": "/get-started",
+        "body": "The steps to connect to our APIs, from testing with dummy data to applying for production access."
+      },
+      {
+        "heading": "API and integration catalogue",
+        "href": "/api-catalogue",
+        "body": "An A to Z list of HMCTS APIs and other integrations, with descriptions of what each one returns."
+      },
+      {
+        "heading": "Documentation",
+        "href": "/documentation",
+        "body": "Guidance for teams using our APIs and for teams listing their own, including the standards an API must meet."
+      }
+    ],
+    [
+      {
+        "heading": "Help and support building software",
+        "href": "/help",
+        "body": "Get help at any point in your project, to make sure your integration with our APIs goes smoothly."
+      }
+    ]
+  ]
+}

@@ -1,0 +1,9 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% if notice %}
+  {{ govukNotificationBanner({
+    type: "success" if notice.success,
+    titleText: notice.title,
+    text: notice.text,
+    attributes: { id: "notice" }
+  }) }}
+{% endif %}

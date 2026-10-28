@@ -1,0 +1,105 @@
+@use 'govuk-frontend' as *;
+
+// A to Z catalogue navigation, ported from the GitHub Pages catalogue. The Design System
+// has no jump-to-letter pattern; letters with nothing under them are greyed rather than
+// hidden, as GOV.UK and NHS.UK do, so the row does not reflow as the catalogue grows.
+.apim-az-nav {
+  margin-bottom: govuk-spacing(6);
+
+  &__list {
+    @include govuk-font($size: 19);
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: govuk-spacing(1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__link {
+    display: inline-block;
+    min-width: govuk-spacing(6);
+    padding: govuk-spacing(1);
+    border: 1px solid govuk-colour('mid-grey');
+    text-align: center;
+    text-decoration: none;
+
+    &:not(&--disabled):hover {
+      background-color: govuk-colour('light-grey');
+    }
+
+    // dark-grey, not mid-grey: mid-grey text fails WCAG AA contrast against white.
+    &--disabled {
+      color: govuk-colour('dark-grey');
+    }
+  }
+}
+
+.apim-tag--nowrap {
+  max-width: none;
+  white-space: nowrap;
+}
+
+// A reference is a UUID, long enough to overflow its column. Break it rather than let
+// the table scroll, since it is the one thing on the row a user has to read out.
+.apim-reference {
+  word-break: break-all;
+}
+
+// Client IDs, secrets and subscription keys: monospaced so 0/O and l/1 can be told apart
+// when someone copies one by eye, and allowed to break because they have no spaces.
+.apim-credential {
+  font-family: monospace;
+  word-break: break-all;
+}
+
+// Example requests on an application's page: kept as written, so long URLs scroll inside
+// the block rather than widen the page on a phone.
+.apim-code {
+  @include govuk-font($size: 16);
+  font-family: monospace;
+  overflow-x: auto;
+  padding: govuk-spacing(3);
+  margin: 0 0 govuk-spacing(4);
+  background-color: govuk-colour('light-grey');
+}
+
+.cookie-preference-success {
+  display: none;
+}
+
+.phone-link {
+  display: none;
+}
+
+.phone-text {
+  display: inline;
+}
+
+img.court-image {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 640px) {
+  .phone-link {
+    display: inline;
+  }
+
+  .phone-text {
+    display: none;
+  }
+}
+
+#alphabet-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+#alphabet-buttons .govuk-button {
+  margin-right: 0;
+  min-width: 40px;
+  max-width: 60px;
+}

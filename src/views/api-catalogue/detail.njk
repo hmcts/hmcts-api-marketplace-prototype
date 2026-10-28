@@ -1,0 +1,72 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = api.title + " - API catalogue - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "catalogue" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "API catalogue", href: "/api-catalogue" }
+] %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl">{{ api.title }}</h1>
+
+    {% if descriptionParagraphs.length %}
+      <h2 class="govuk-heading-m">What does this API do?</h2>
+
+      {% for paragraph in descriptionParagraphs %}
+        <p class="govuk-body">{{ paragraph }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <h2 class="govuk-heading-m">Use this API</h2>
+
+    <p class="govuk-body">
+      Add this API to an application to try it out with dummy data. Your Try it now credentials, a
+      subscription key, client ID and secret, are issued automatically with no review.
+    </p>
+
+    <p class="govuk-body">
+      When you are ready to use live data, request production credentials for the application you
+      have tested. Your request is reviewed by the HMCTS Data Access Panel.
+    </p>
+
+    <p class="govuk-body">
+      {% if not user %}
+        You need a <a class="govuk-link" href="/sign-in?prompt=create">developer account</a> to create an application.
+      {% endif %}
+      Read the <a class="govuk-link" href="/documentation/consumer-guidance">consumer guidance</a> before you start.
+    </p>
+
+    <div class="govuk-button-group">
+      {{ govukButton({ text: "Add to a new application", href: "/account/applications/new", attributes: { id: "add-to-application" } }) }}
+    </div>
+
+    <h2 class="govuk-heading-m">About this API</h2>
+
+    {{ govukSummaryList({
+      rows: [
+        { key: { text: "Owning team" }, value: { text: owningTeam } },
+        { key: { text: "Platform" }, value: { text: api.platform } },
+        { key: { text: "Domain" }, value: { text: api.domain } },
+        { key: { text: "Repository name" }, value: { text: api.name } }
+      ]
+    }) }}
+
+    <h2 class="govuk-heading-m">Documentation</h2>
+
+    <ul class="govuk-list">
+      <li><a class="govuk-link" href="{{ docsUrl }}" rel="noreferrer noopener" target="_blank">Read the API reference (opens in new tab)</a></li>
+      <li><a class="govuk-link" href="{{ repoUrl }}" rel="noreferrer noopener" target="_blank">View the source repository on GitHub (opens in new tab)</a></li>
+    </ul>
+
+  </div>
+</div>
+
+{% endblock %}

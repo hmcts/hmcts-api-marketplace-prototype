@@ -1,0 +1,14 @@
+{% extends "template.njk" %}
+
+{% set pageTitle = "Sorry, there is a problem with the service - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
+    <p class="govuk-body" id="applications-unavailable">Your applications could not be reached just now. Try again in a few minutes.</p>
+    <p class="govuk-body"><a class="govuk-link" href="/account">Back to your account</a></p>
+  </div>
+</div>
+{% endblock %}

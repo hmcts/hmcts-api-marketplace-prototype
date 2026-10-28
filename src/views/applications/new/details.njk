@@ -1,0 +1,41 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "macros/errors.njk" import errorSummary %}
+
+{% set pageTitle = ("Error: " if errors.length) + "Application details - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Your account", href: "/account" },
+  { text: "Manage applications", href: "/account/applications" }
+] %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {{ errorSummary(errors) }}
+
+    <span class="govuk-caption-l">Add new application</span>
+    <h1 class="govuk-heading-xl">Application details</h1>
+
+    <form method="post" action="/account/applications/new/details" novalidate>
+
+      {{ govukInput({
+        label: { text: "What is your application name?", classes: "govuk-label--m" },
+        hint: { text: "A name you will recognise, such as the name of the software that will call our APIs. Use 8 to 50 letters, numbers or spaces. You cannot change it later." },
+        id: "name",
+        name: "name",
+        value: draft.name,
+        autocomplete: "off",
+        errorMessage: { text: errorFor.name } if errorFor.name
+      }) }}
+
+      {{ govukButton({ text: "Continue", attributes: { id: "details-continue" } }) }}
+      <p class="govuk-body"><a class="govuk-link" href="/account/applications">Cancel</a></p>
+    </form>
+  </div>
+</div>
+{% endblock %}

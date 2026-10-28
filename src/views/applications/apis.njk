@@ -1,0 +1,32 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "macros/errors.njk" import errorSummary %}
+
+{% set pageTitle = ("Error: " if errors.length) + "Add or remove APIs - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Manage applications", href: "/account/applications" },
+  { text: application.name, href: "/account/applications" }
+] %}
+{% set apisLegend = "Which APIs does " + application.name + " need?" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary(errors) }}
+
+    <span class="govuk-caption-l">{{ application.name }}</span>
+    <h1 class="govuk-heading-xl">Add or remove APIs</h1>
+
+    <p class="govuk-body">An API you remove loses its subscription key straight away. An API you add gets a new one.</p>
+
+    <form method="post" action="/account/applications/apis" novalidate>
+      {% include "applications/api-checkboxes.njk" %}
+      {{ govukButton({ text: "Save changes", attributes: { id: "save-apis" } }) }}
+      <p class="govuk-body"><a class="govuk-link" href="/account/applications">Cancel</a></p>
+    </form>
+  </div>
+</div>
+{% endblock %}

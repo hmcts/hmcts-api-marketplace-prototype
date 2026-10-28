@@ -1,0 +1,32 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "macros/errors.njk" import errorSummary %}
+
+{% set pageTitle = ("Error: " if errors.length) + "Choose APIs - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Your account", href: "/account" },
+  { text: "Manage applications", href: "/account/applications" }
+] %}
+{% set apisLegend = "Which APIs does your application need?" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {{ errorSummary(errors) }}
+
+    <span class="govuk-caption-l">Add new application</span>
+    <h1 class="govuk-heading-xl">Choose APIs</h1>
+
+    <p class="govuk-body">Not sure? Browse the <a class="govuk-link" href="/api-catalogue">API catalogue</a>. You can add or remove APIs later.</p>
+
+    <form method="post" action="/account/applications/new/apis" novalidate>
+      {% include "applications/api-checkboxes.njk" %}
+      {{ govukButton({ text: "Continue", attributes: { id: "apis-continue" } }) }}
+      <p class="govuk-body"><a class="govuk-link" href="/account/applications">Cancel</a></p>
+    </form>
+  </div>
+</div>
+{% endblock %}

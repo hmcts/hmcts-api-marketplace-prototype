@@ -1,0 +1,111 @@
+{% extends "template.njk" %}
+
+{% set pageTitle = "Getting started with our APIs - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "get-started" %}
+{% set breadcrumbs = [{ text: "Home", href: "/" }] %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl">Getting started with our APIs</h1>
+
+    <p class="govuk-body-l">
+      Learn about what APIs we offer and how you can connect to them.
+    </p>
+
+    <h2 class="govuk-heading-l" id="what-is-it">What is the HMCTS API Marketplace?</h2>
+
+    <p class="govuk-body">
+      The HMCTS API Marketplace is a central catalogue of data APIs from across His Majesty&rsquo;s
+      Courts and Tribunals Service. Think of it as a library for data &mdash; teams can browse,
+      understand, and request access to data feeds that power justice services.
+    </p>
+
+    <p class="govuk-body">
+      The marketplace does not build or host the APIs itself. It makes them discoverable, documented,
+      and accessible in one place &mdash; with governance controls to ensure only the right people can
+      access the right data.
+    </p>
+
+    <h2 class="govuk-heading-l" id="steps">Steps to get connected</h2>
+
+    <h3 class="govuk-heading-m">1. Read the consumer guidance</h3>
+
+    <p class="govuk-body">
+      Before you design your software, read the
+      <a class="govuk-link" href="/documentation/consumer-guidance">consumer guidance</a>. It explains
+      whether your organisation is eligible, how to use APIs responsibly, including rate limits,
+      authentication and error handling, and the terms of use that apply to everyone using the
+      marketplace.
+    </p>
+
+    <h3 class="govuk-heading-m">2. Confirm your use case</h3>
+
+    <p class="govuk-body">
+      Before you go any further, confirm that you have a valid use case for the APIs you want to use.
+      Production access is only approved for a valid use case, so be ready to explain yours when you
+      apply.
+    </p>
+
+    <h3 class="govuk-heading-m">3. Test the APIs</h3>
+
+    <p class="govuk-body">
+      You can test our APIs with dummy data before you ask for access to live data, using Try it now. To
+      do this:
+    </p>
+
+    <ol class="govuk-list govuk-list--number">
+      <li>Browse the <a class="govuk-link" href="/api-catalogue">API catalogue</a> to find the APIs you
+        want to test. You do not need an account to do this.</li>
+      <li><a class="govuk-link" href="/sign-in">Sign in</a>, or
+        <a class="govuk-link" href="/sign-in">create a developer account</a> if you do not have one yet.
+        You need an account to create an application for Try it now and test the APIs.</li>
+      <li><a class="govuk-link" href="/account/applications/new">Create an application</a> for Try it now
+        and add the APIs you want to test. Your Try it now credentials and keys are issued
+        automatically, with no review.</li>
+      <li>Test your software with the APIs.</li>
+    </ol>
+
+    <h3 class="govuk-heading-m">4. Apply for production access</h3>
+
+    <p class="govuk-body">
+      When you are ready to use live data, request production credentials for an application you have
+      tested in Try it now.
+    </p>
+
+    <p class="govuk-body">
+      Your request is reviewed by the HMCTS Data Access Panel. This is currently an offline process, so
+      look out for emails requesting clarification, or confirming approval or rejection.
+    </p>
+
+    <p class="govuk-body">
+      If your request is approved, the API Marketplace team will issue your production credentials and
+      keys. You can then use them to call our APIs with live data.
+    </p>
+
+    <h2 class="govuk-heading-l" id="help">Get help and support</h2>
+
+    <p class="govuk-body">
+      If you have any issues, either during development or once your software is live, you can
+      contact the marketplace team at <a class="govuk-link" href="mailto:APIMarketplace@hmcts.net">APIMarketplace@hmcts.net</a>.
+    </p>
+
+    <p class="govuk-body">
+      Read the <a class="govuk-link" href="/documentation/consumer-guidance">consumer guidance</a> for
+      detailed information on using APIs responsibly and on your legal obligations.
+    </p>
+
+    {{ govukButton({
+      text: "Browse the API catalogue",
+      href: "/api-catalogue",
+      isStartButton: true
+    }) }}
+
+  </div>
+</div>
+
+{% endblock %}

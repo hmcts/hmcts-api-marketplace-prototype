@@ -1,0 +1,84 @@
+{% extends "template.njk" %}
+
+{% set pageTitle = "Producer guidance - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "documentation" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Documentation", href: "/documentation" }
+] %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl">Producer guidance</h1>
+
+    <p class="govuk-body-l">
+      How to list your team&rsquo;s API in the marketplace so other teams can find it, understand what
+      it does, and request access &mdash; and what you are responsible for once it is live.
+    </p>
+
+    <p class="govuk-body">
+      The marketplace doesn&rsquo;t own or run any of the APIs it lists &mdash; your team keeps that.
+      What it does is make your API discoverable, documented, and reachable through
+      a consistent access request process.
+    </p>
+
+    <h2 class="govuk-heading-m">What you will need</h2>
+
+    <p class="govuk-body">
+      Your API must meet the <a class="govuk-link" href="/documentation/producer-standards">producer
+      standards</a> before it can be listed. You will need:
+    </p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>a published OpenAPI specification, reachable at a stable URL</li>
+      <li>a named owning team and a contact email</li>
+      <li>a data classification for everything the API returns</li>
+      <li>a description of what the API is for</li>
+      <li>a DPIA in place that covers the data being shared as part of the API</li>
+    </ul>
+
+    <h2 class="govuk-heading-m" id="getting-listed">How to get your API listed</h2>
+
+    <ol class="govuk-list govuk-list--number">
+      <li>Check your API meets the <a class="govuk-link" href="/documentation/producer-standards">producer standards</a>: the technical requirements, eligibility criteria and specification quality.</li>
+      <li>Make sure your API repository is <strong>public on GitHub</strong> under the HMCTS organisation.</li>
+      <li>Add the <code>publish-api-docs.yml</code> workflow to <code>.github/workflows/</code> and raise a pull request.</li>
+      <li>Once merged, trigger the workflow manually or cut a GitHub release &mdash; the version is stamped from the release tag.</li>
+      <li>Confirm the Swagger UI documentation site is live at <code>https://hmcts.github.io/&lt;repo-name&gt;/</code>.</li>
+      <li>Email the API Marketplace team at <a class="govuk-link" href="mailto:APIMarketplace@hmcts.net">APIMarketplace@hmcts.net</a> to get your API published. The team will review your API and confirm.</li>
+      <li>Once approved, your API appears in the catalogue and is kept in sync with your specification automatically.</li>
+    </ol>
+
+    <h2 class="govuk-heading-m">Ongoing responsibilities</h2>
+
+    <dl class="govuk-body">
+      <dt class="govuk-!-font-weight-bold">Keeping the spec current</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">Update your OpenAPI specification whenever you change the API. Cut a new GitHub release to publish the updated documentation.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Notifying consumers of breaking changes</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">Tell consumers about breaking changes with enough notice to act on them.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Reviewing access requests promptly</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">Respond to consumer access requests promptly. Give a clear reason if you reject one.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Maintaining contact details</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">Keep <code>info.contact.email</code> in your spec pointing at an active team inbox.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Deprecation and removal</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">If you need to remove an API, tell all consumers and the marketplace team at least 30 days in advance.</dd>
+    </dl>
+
+    <h2 class="govuk-heading-m">Get help</h2>
+
+    <p class="govuk-body">
+      If you&rsquo;re not sure whether your API is ready, or you want to talk through the process
+      first, contact the marketplace team at <a class="govuk-link" href="mailto:APIMarketplace@hmcts.net">APIMarketplace@hmcts.net</a>.
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

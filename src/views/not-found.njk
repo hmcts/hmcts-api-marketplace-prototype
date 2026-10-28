@@ -1,0 +1,11 @@
+{% extends "template.njk" %}
+
+{% block pageTitle %}
+  {{ pageTitle }}
+{% endblock %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ heading }}</h1>
+  <p class="govuk-body-m">{{ typo_message }}</p>
+  <p class="govuk-body-m">{{ paste_message }}</p>
+{% endblock %}

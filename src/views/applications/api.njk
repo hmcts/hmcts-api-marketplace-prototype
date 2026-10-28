@@ -1,0 +1,40 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+
+{% set pageTitle = subscription.apiTitle + " - " + application.name + " - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Manage applications", href: "/account/applications" },
+  { text: application.name, href: "/account/applications" }
+] %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-l">{{ application.name }}</span>
+    <h1 class="govuk-heading-xl">{{ subscription.apiTitle }}</h1>
+
+    {{ govukSummaryList({
+      rows: [
+        { key: { text: "API" }, value: { html: '<a class="govuk-link" href="/api-catalogue">' + (subscription.apiTitle | escape) + '</a>' } },
+        { key: { text: "Subscribed" }, value: { text: subscription.subscribedAt | date } }
+      ]
+    }) }}
+
+    {% if subscriptionKey %}
+      {% set keyHtml %}
+        <p class="govuk-body apim-credential govuk-!-font-weight-bold" id="subscription-key">{{ subscriptionKey }}</p>
+        <p class="govuk-body">Send it in the <code>Ocp-Apim-Subscription-Key</code> header with every call to this API. Keep it secret.</p>
+      {% endset %}
+      {{ govukDetails({ summaryText: "Show subscription key", html: keyHtml, attributes: { id: "show-subscription-key" } }) }}
+    {% else %}
+      <p class="govuk-body" id="subscription-key-unavailable">The subscription key could not be loaded just now. Try again in a few minutes.</p>
+    {% endif %}
+
+    <p class="govuk-body"><a class="govuk-link" href="/account/applications">Back to {{ application.name }}</a></p>
+  </div>
+</div>
+{% endblock %}

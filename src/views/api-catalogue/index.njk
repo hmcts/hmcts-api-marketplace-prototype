@@ -1,0 +1,126 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set pageTitle = ("Search results for " + query if query else "API catalogue") + " - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "catalogue" %}
+{% set breadcrumbs = [{ text: "Home", href: "/" }] %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl">API catalogue</h1>
+
+    <p class="govuk-body-l">
+      Browse the APIs published by HMCTS teams, search by name or description, and open one to read
+      what it does and how to get access.
+    </p>
+
+    <form method="get" action="/api-catalogue" role="search" novalidate>
+      {{ govukInput({
+        label: { text: "Search the catalogue", classes: "govuk-label--m" },
+        hint: { text: "Search by API name, description, platform, domain or team. Leave this empty to browse alphabetically." },
+        id: "q",
+        name: "q",
+        type: "search",
+        value: query,
+        classes: "govuk-!-width-two-thirds"
+      }) }}
+      {{ govukButton({ text: "Search", classes: "govuk-button--secondary", attributes: { id: "catalogue-search" } }) }}
+    </form>
+
+    {% if unavailable %}
+      {{ govukWarningText({
+        text: "The catalogue could not be loaded just now. Try again in a few minutes.",
+        iconFallbackText: "Warning",
+        attributes: { id: "catalogue-unavailable" }
+      }) }}
+    {% else %}
+      <p class="govuk-body" id="catalogue-count">
+        {% if query %}
+          {{ results.length }} {{ "API" if results.length == 1 else "APIs" }} matching &ldquo;{{ query }}&rdquo;.
+          <a class="govuk-link" href="/api-catalogue">Clear search</a>
+        {% else %}
+          {{ results.length }} {{ "API" if results.length == 1 else "APIs" }}
+        {% endif %}
+      </p>
+    {% endif %}
+
+  </div>
+</div>
+
+{% macro apiRow(api) %}
+  <div class="govuk-!-margin-bottom-6 apim-catalogue-api">
+    <h3 class="govuk-heading-m govuk-!-margin-bottom-1">
+      <a class="govuk-link" href="/api-catalogue/{{ api.name }}">{{ api.title }}</a>
+    </h3>
+    <p class="govuk-!-margin-bottom-2">
+      <strong class="govuk-tag govuk-tag--blue apim-tag--nowrap govuk-!-margin-right-1">{{ api.platform }}</strong>
+      <strong class="govuk-tag govuk-tag--grey apim-tag--nowrap govuk-!-margin-right-1">{{ api.domain }}</strong>
+      <strong class="govuk-tag govuk-tag--green apim-tag--nowrap">Published</strong>
+    </p>
+    {% if api.description %}<p class="govuk-body govuk-!-margin-bottom-1">{{ api.description }}</p>{% endif %}
+  </div>
+{% endmacro %}
+
+{% if not unavailable %}
+  {% if not query %}
+    {#
+      Full width: 26 letter links need the room to sit on one or two rows. Every letter
+      is shown so the row does not reflow as the catalogue grows; letters with nothing
+      under them are plain text, not links.
+    #}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <nav class="apim-az-nav" aria-label="Jump to a letter" id="catalogue-az">
+          <ul class="apim-az-nav__list">
+            {% for item in letters %}
+              <li>
+                {% if item.present %}
+                  <a class="govuk-link apim-az-nav__link" href="#az-{{ item.letter }}">{{ item.letter }}<span class="govuk-visually-hidden"> APIs</span></a>
+                {% else %}
+                  <span class="apim-az-nav__link apim-az-nav__link--disabled" aria-hidden="true">{{ item.letter }}</span>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds" id="catalogue-results">
+      {% if query %}
+        {% for api in results %}{{ apiRow(api) }}{% endfor %}
+      {% else %}
+        {% for group in groups %}
+          <h2 class="govuk-heading-l govuk-!-margin-top-6" id="az-{{ group.letter }}">{{ group.letter }}</h2>
+          {% for api in group.apis %}{{ apiRow(api) }}{% endfor %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-m">Can&rsquo;t find what you need?</h2>
+
+    <p class="govuk-body">
+      If the data or capability you need isn&rsquo;t listed, email the API Marketplace team at
+      <a class="govuk-link" href="mailto:APIMarketplace@hmcts.net">APIMarketplace@hmcts.net</a>. We record
+      what people are looking for and use it to decide which APIs to prioritise.
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

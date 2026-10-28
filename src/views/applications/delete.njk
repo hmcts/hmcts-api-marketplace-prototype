@@ -1,0 +1,34 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Delete application - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Manage applications", href: "/account/applications" },
+  { text: application.name, href: "/account/applications" }
+] %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-l">{{ application.name }}</span>
+    <h1 class="govuk-heading-xl">Are you sure you want to delete this application?</h1>
+
+    {{ govukWarningText({
+      text: "Its client ID, client secret and all " + application.apis.length + " subscription keys will stop working straight away. You cannot undo this.",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <form method="post" action="/account/applications/delete" novalidate>
+      <input type="hidden" name="confirm" value="yes">
+      <div class="govuk-button-group">
+        {{ govukButton({ text: "Yes, delete application", classes: "govuk-button--warning", attributes: { id: "confirm-delete" } }) }}
+        <a class="govuk-link" href="/account/applications">No, keep it</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

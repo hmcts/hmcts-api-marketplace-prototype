@@ -1,0 +1,52 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set pageTitle = "Application created - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set hideBackLink = true %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {{ govukPanel({
+      titleText: "Application created",
+      html: "Application name<br><strong id=\"created-name\">" + (application.name | escape) + "</strong>"
+    }) }}
+
+    <h2 class="govuk-heading-m">Authorisation details</h2>
+
+    {{ govukSummaryList({
+      rows: [
+        { key: { text: "Client ID" }, value: { html: '<span class="apim-credential" id="client-id">' + application.clientId + '</span>' } },
+        { key: { text: "Publisher ID (scope)" }, value: { html: '<span class="apim-credential" id="publisher-id">' + (publisherId | escape) + '</span>' } }
+      ]
+    }) }}
+
+    {% include "applications/secret-once.njk" %}
+
+    {% include "applications/access.njk" %}
+
+    <h2 class="govuk-heading-m">Subscription keys</h2>
+    <p class="govuk-body">Send the subscription key for an API in the <code>Ocp-Apim-Subscription-Key</code> header with every call to it.</p>
+
+    <dl class="govuk-summary-list" id="subscription-keys"></dl>
+
+    {% if failedApis.length %}
+      <div id="subscriptions-failed">
+        {{ govukWarningText({
+          text: "These APIs could not be added just now: " + failedApis | join(", ") + ". Add them from the application page.",
+          iconFallbackText: "Warning"
+        }) }}
+      </div>
+    {% endif %}
+
+    {{ govukButton({ text: "View application", href: "#", attributes: { id: "view-application" } }) }}
+    <p class="govuk-body"><a class="govuk-link" href="/account/applications">Back to your applications</a></p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Check your answers before creating your application - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Your account", href: "/account" },
+  { text: "Manage applications", href: "/account/applications" }
+] %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Check your answers before creating your application</h1>
+
+    {% set summaryRows = [] %}
+    {% for row in rows %}
+      {% set summaryRows = (summaryRows.push({
+        key: { text: row.key },
+        value: { text: row.value },
+        actions: { items: [{ href: row.href, text: "Change", visuallyHiddenText: row.key | lower }] }
+      }), summaryRows) %}
+    {% endfor %}
+    {{ govukSummaryList({ rows: summaryRows }) }}
+
+    <p class="govuk-body">
+      When you create the application we will issue its client ID and secret, and a subscription key for each API.
+      You will see the client secret once only.
+    </p>
+
+    <form method="post" action="/account/applications/new/check-answers" novalidate>
+      {{ govukButton({ text: "Create application", attributes: { id: "create-application" } }) }}
+    </form>
+    <p class="govuk-body"><a class="govuk-link" href="/account/applications">Cancel</a></p>
+  </div>
+</div>
+{% endblock %}
