@@ -5,6 +5,27 @@ Prototypes built for demonstration and discussion.
 Nothing here is production code, and none of it will progress to a production environment. No real
 data, no secrets. The earlier marketplace prototype is on the `main-old` branch.
 
+## Where it is published
+
+<https://hmcts.github.io/hmcts-api-marketplace-prototype/>
+
+GitHub Pages serves `docs/` from `main`. A push to `main` rebuilds the site on its own, but
+changing the Pages source branch does not — if the site is stale after a settings change, ask for
+a build:
+
+```bash
+gh api -X POST repos/hmcts/hmcts-api-marketplace-prototype/pages/builds
+```
+
+Check what is actually deployed, rather than assuming the latest commit is live:
+
+```bash
+gh api repos/hmcts/hmcts-api-marketplace-prototype/pages/builds/latest --jq '{status, commit}'
+```
+
+The previous marketplace site is on the `main-old` branch. Pointing Pages back at it is a
+settings change, not a revert.
+
 ## This prototype
 
 A static build of the HMCTS API Marketplace front end, ported from `web-api-marketplace`. The views
