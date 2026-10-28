@@ -1,0 +1,42 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitle = "Manage applications - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [{ text: "Home", href: "/" }, { text: "Your account", href: "/account" }] %}
+
+{% block content %}
+
+{% include "components/notice.njk" %}
+
+<h1 class="govuk-heading-xl">Manage applications</h1>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-body">
+      An application holds the credentials your software uses to call our APIs: a client ID and secret,
+      and a subscription key for each API you add to it.
+    </p>
+    <p class="govuk-body">
+      Add an application to try our APIs with dummy data using Try it now. Your credentials and keys are
+      issued automatically, with no review.
+    </p>
+    <p class="govuk-body">
+      When you are ready to use live data, open the application you have tested and request production
+      access for it. Your request is reviewed by the HMCTS Data Access Panel. If it is approved, your
+      production credentials are emailed to you.
+    </p>
+    {{ govukButton({ text: "Add new application", href: "/account/applications/new", attributes: { id: "add-application" } }) }}
+  </div>
+</div>
+
+<h2 class="govuk-heading-m" id="your-applications">Applications</h2>
+
+{# The real service renders this table from the backend. Here it is built by
+   applications.js from the browser's own store. #}
+<p class="govuk-body" id="applications-empty" hidden>You have no applications yet.</p>
+<div id="applications-list"></div>
+
+{% endblock %}

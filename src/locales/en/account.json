@@ -1,0 +1,32 @@
+{
+  "heading": "Your account",
+  "signedInAs": "You are signed in as",
+  "signOutButton": "Sign out",
+  "requests": {
+    "tabLabel": "My requests",
+    "heading": "My requests",
+    "intro": "Everything you have submitted, including your production credentials requests.",
+    "emptyHtml": "You have not submitted any requests yet. To request production credentials, open the application you have tested in <a class=\"govuk-link\" href=\"/account/applications\">Manage applications</a>.",
+    "unavailable": "Your requests could not be loaded just now. Try again in a few minutes.",
+    "tableCaption": "Requests you have submitted",
+    "columnStatus": "Status",
+    "columnReference": "Reference",
+    "columnType": "Type",
+    "columnSubmitted": "Submitted",
+    "types": {
+      "SUBSCRIPTION": "Subscribe to an API",
+      "PUBLISH": "Publish an API",
+      "NEW_API": "Request a new API",
+      "PRODUCTION": "Production credentials"
+    }
+  },
+  "nextSteps": {
+    "heading": "Next steps",
+    "stepsHtml": [
+      "<a class=\"govuk-link\" href=\"/api-catalogue\">Browse the API catalogue</a> to find the APIs you want to test.",
+      "<a class=\"govuk-link\" href=\"/account/applications/new\">Create an application</a> for Try it now and add those APIs.",
+      "Test your software with the APIs, using your Try it now credentials.",
+      "When you are ready for live data, go to <a class=\"govuk-link\" href=\"/account/applications\">Manage applications</a>, choose the application you have tested and request production credentials for it. You can follow the request under My requests."
+    ]
+  }
+}

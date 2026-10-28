@@ -1,0 +1,12 @@
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{# The error summary every form here shows: one entry per FieldError, linking to its field. #}
+{% macro errorSummary(errors) %}
+  {% if errors and errors.length %}
+    {% set errorList = [] %}
+    {% for error in errors %}
+      {% set errorList = (errorList.push({ text: error.text, href: "#" + error.name }), errorList) %}
+    {% endfor %}
+    {{ govukErrorSummary({ titleText: "There is a problem", errorList: errorList }) }}
+  {% endif %}
+{% endmacro %}

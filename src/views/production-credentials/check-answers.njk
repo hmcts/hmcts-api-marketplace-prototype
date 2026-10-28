@@ -1,0 +1,39 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% set pageTitle = ("Error: " if error) + "Check your answers - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Request production credentials", href: "/account/production-credentials" }
+] %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if error %}
+      {{ govukErrorSummary({ titleText: "There is a problem", errorList: [{ text: error, href: "#production-submit" }], attributes: { id: "submit-failed" } }) }}
+    {% endif %}
+
+    <h1 class="govuk-heading-xl">Check your answers before submitting</h1>
+
+    {% set summaryRows = [] %}
+    {% for row in rows %}
+      {% set summaryRows = (summaryRows.push({
+        key: { text: row.key },
+        value: { text: row.value },
+        actions: { items: [{ href: "/account/production-credentials", text: "Change", visuallyHiddenText: row.key | lower }] }
+      }), summaryRows) %}
+    {% endfor %}
+    {{ govukSummaryList({ rows: summaryRows }) }}
+
+    <form method="post" action="/account/production-credentials/check-answers" novalidate>
+      {{ govukButton({ text: "Accept and submit", attributes: { id: "production-submit" } }) }}
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+[
+  { "view": "home.njk",                     "url": "/",                        "locale": "home" },
+  { "view": "sign-in.njk",                  "url": "/sign-in/",                "locale": "signIn" },
+  { "view": "account.njk",                  "url": "/account/",                "locale": "account" },
+  { "view": "accessibility-statement.njk",  "url": "/accessibility-statement/","locale": "accessibilityStatement" },
+  { "view": "cookies.njk",                  "url": "/cookies/",                "locale": "cookies" },
+  { "view": "not-found.njk",                "url": "/404.html",                "locale": "not-found" },
+  { "view": "error.njk",                    "url": "/error/",                  "locale": "error" },
+
+  { "view": "content/privacy.njk",          "url": "/privacy/" },
+  { "view": "content/get-started/index.njk","url": "/get-started/" },
+  { "view": "content/help/index.njk",       "url": "/help/" },
+
+  { "view": "content/documentation/index.njk",                   "url": "/documentation/" },
+  { "view": "content/documentation/architecture.njk",            "url": "/documentation/architecture/" },
+  { "view": "content/documentation/architecture-principles.njk", "url": "/documentation/architecture-principles/" },
+  { "view": "content/documentation/building-software.njk",       "url": "/documentation/building-software/" },
+  { "view": "content/documentation/case-studies.njk",            "url": "/documentation/case-studies/" },
+  { "view": "content/documentation/consumer-guidance.njk",       "url": "/documentation/consumer-guidance/" },
+  { "view": "content/documentation/data-governance.njk",         "url": "/documentation/data-governance/" },
+  { "view": "content/documentation/glossary.njk",                "url": "/documentation/glossary/" },
+  { "view": "content/documentation/our-api-technologies.njk",    "url": "/documentation/our-api-technologies/" },
+  { "view": "content/documentation/our-capabilities.njk",        "url": "/documentation/our-capabilities/" },
+  { "view": "content/documentation/producer-guidance.njk",       "url": "/documentation/producer-guidance/" },
+  { "view": "content/documentation/producer-standards.njk",      "url": "/documentation/producer-standards/" },
+  { "view": "content/documentation/resources.njk",               "url": "/documentation/resources/" },
+  { "view": "content/documentation/technology-introduction.njk", "url": "/documentation/technology-introduction/" },
+
+  { "view": "api-catalogue/index.njk",  "url": "/api-catalogue/" },
+  { "view": "api-catalogue/detail.njk", "url": "/api-catalogue/detail/" },
+
+  { "view": "applications/index.njk",        "url": "/account/applications/" },
+  { "view": "applications/detail.njk",       "url": "/account/applications/detail/" },
+  { "view": "applications/access.njk",       "url": "/account/applications/access/" },
+  { "view": "applications/apis.njk",         "url": "/account/applications/apis/" },
+  { "view": "applications/api.njk",          "url": "/account/applications/api/" },
+  { "view": "applications/delete.njk",       "url": "/account/applications/delete/" },
+  { "view": "applications/instructions.njk", "url": "/account/applications/instructions/" },
+  { "view": "applications/secret-once.njk",  "url": "/account/applications/secret-once/" },
+  { "view": "applications/unavailable.njk",  "url": "/account/applications/unavailable/" },
+
+  { "view": "applications/new/index.njk",         "url": "/account/applications/new/" },
+  { "view": "applications/new/details.njk",       "url": "/account/applications/new/details/" },
+  { "view": "applications/new/apis.njk",          "url": "/account/applications/new/apis/" },
+  { "view": "applications/new/check-answers.njk", "url": "/account/applications/new/check-answers/" },
+  { "view": "applications/new/confirmation.njk",  "url": "/account/applications/new/confirmation/" },
+
+  { "view": "production-credentials/form.njk",          "url": "/account/production-credentials/" },
+  { "view": "production-credentials/check-answers.njk", "url": "/account/production-credentials/check-answers/" },
+  { "view": "production-credentials/confirmation.njk",  "url": "/account/production-credentials/confirmation/" },
+  { "view": "production-credentials/view.njk",          "url": "/account/production-credentials/view/" }
+]

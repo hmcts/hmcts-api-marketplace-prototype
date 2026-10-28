@@ -1,0 +1,7 @@
+[
+  { "value": "court-schedule",        "text": "Court Schedule",         "hint": { "text": "Hearing schedules for a court, by date and courtroom." } },
+  { "value": "prosecution-case",      "text": "Prosecution Case Details", "hint": { "text": "Case details for a prosecution, including defendants and offences." } },
+  { "value": "hearing-results",       "text": "Hearing Results",       "hint": { "text": "Results recorded against a hearing once it has concluded." } },
+  { "value": "defendant-details",     "text": "Defendant Details",     "hint": { "text": "Personal and case details for a named defendant." } },
+  { "value": "courthouse-reference",  "text": "Courthouse Reference Data", "hint": { "text": "Reference data for courthouses, rooms and sitting days." } }
+]

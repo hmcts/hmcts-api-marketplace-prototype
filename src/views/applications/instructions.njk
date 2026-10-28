@@ -1,0 +1,34 @@
+{#- How to use this application's credentials, as curl commands: the token request always, SLC calls when it has SLC. -#}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{{ govukSummaryList({
+  rows: [
+    { key: { text: "Publisher ID (scope)" }, value: { html: '<span class="apim-credential" id="publisher-id">' + (token.publisherId | escape) + '</span>' } }
+  ]
+}) }}
+
+<h3 class="govuk-heading-s">Get an access token</h3>
+<p class="govuk-body">Request a token from Microsoft Entra ID with the OAuth 2.0 client credentials flow:</p>
+<pre class="apim-code" id="token-request"><code>curl --request POST \
+  --url {{ token.url }} \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data grant_type=client_credentials \
+  --data client_id={{ token.clientId }} \
+  --data 'client_secret={{ token.clientSecret }}' \
+  --data scope={{ token.scope }}</code></pre>
+
+{% if slc %}
+  <h3 class="govuk-heading-s">Call the Scheduling and Listing Court Schedule API</h3>
+  <p class="govuk-body">Send the access token with each request:</p>
+  <pre class="apim-code" id="slc-request"><code>curl --request GET \
+  --url {{ slc.courtScheduleUrl }} \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer &lt;token&gt;' \
+  --header 'Ocp-Apim-Subscription-Key: &lt;apim_subscription_key&gt;'</code></pre>
+
+  <h3 class="govuk-heading-s">Find a case URN to try</h3>
+  <p class="govuk-body">List the test scenarios to get a case URN to use in the request above:</p>
+  <pre class="apim-code" id="scenarios-request"><code>curl --request GET \
+  --url {{ slc.scenariosUrl }} \
+  --header 'Accept: application/json' \
+  --header 'Ocp-Apim-Subscription-Key: &lt;apim_subscription_key&gt;'</code></pre>
+{% endif %}

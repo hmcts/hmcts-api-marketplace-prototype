@@ -1,0 +1,316 @@
+{% extends "template.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% block pageTitle %}
+    {{ title }}
+{% endblock %}
+
+{% block beforeContent %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="parent-box">
+
+  <div class="cookie-preference-success">
+    {% set html %}
+      <p class="govuk-notification-banner__heading">{{ saved }}.</p>
+      <p class="govuk-body-m">{{ additionalCookies }}</p>
+      <p class="govuk-body-m"><a class="govuk-notification-banner__link" href="/">{{ homePageLink }}</a>.</p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      type: "success",
+      html: html
+    }) }}
+  </div>
+
+  <div class="parent-box alphabetical-box">
+    <h1 class="govuk-heading-xl">
+      {{ h1 }}
+    </h1>
+    <p class="govuk-body">{{ p1 }}</p>
+    <p class="govuk-body">{{ p2 }}</p>
+    <ul class="govuk-list govuk-list--bullet">
+      {% for item in bullets %}
+        <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+      <h2 class="govuk-heading-l">
+        {{ h2 }}
+      </h2>
+
+  <h3 class="govuk-heading-m">
+     {{ language_.header }}
+   </h3>
+
+ {{ govukTable({
+    firstCellIsHeader: true,
+    caption: caption,
+    head: [
+      {
+        text: name,
+        classes: 'govuk-!-width-one-quarter'
+      },
+      {
+        text: purpose,
+        classes: 'govuk-!-width-one-half'
+      },
+      {
+        text: expires,
+        classes: 'govuk-!-width-one-quarter'
+      }
+    ],
+    rows: [
+      [
+        {
+          text: 'connect.sid'
+        },
+        {
+          text: language_.sessionDescription
+        },
+        {
+          text: language_.sessionDuration
+        }
+      ]
+    ]
+  }) }}
+
+  <h3 class="govuk-heading-m">
+    {{ preferences.header }}
+  </h3>
+
+  {{ govukTable({
+    firstCellIsHeader: true,
+    caption: caption,
+    head: [
+      {
+        text: name,
+        classes: 'govuk-!-width-one-quarter'
+      },
+      {
+        text: purpose,
+        classes: 'govuk-!-width-one-half'
+      },
+      {
+        text: expires,
+        classes: 'govuk-!-width-one-quarter'
+      }
+    ],
+    rows: [
+      [
+        {
+          text: 'amp-cookie-preferences'
+        },
+        {
+          text: preferences.appCookiePreferencesDescription
+        },
+        {
+          text: preferences.appCookiePreferencesDuration
+        }
+      ]
+    ]
+  }) }}
+
+  <h3 class="govuk-heading-m">
+    {{ analytics.header }}
+  </h3>
+  <p class="govuk-body-m">{{ analytics.p1 }}</p>
+  {{ govukTable({
+    firstCellIsHeader: true,
+    caption: caption,
+    head: [
+      {
+        text: name,
+        classes: 'govuk-!-width-one-quarter'
+      },
+      {
+        text: purpose,
+        classes: 'govuk-!-width-one-half'
+      },
+      {
+        text: expires,
+        classes: 'govuk-!-width-one-quarter'
+      }
+    ],
+    rows: [
+      [
+        {
+          text: '_ga'
+        },
+        {
+          text: analytics.gaDescription
+        },
+        {
+          text: analytics.gaDuration
+        }
+      ],
+      [
+        {
+          text: '_gid'
+        },
+        {
+          text: analytics.gidDescription
+        },
+        {
+          text: analytics.gidDuration
+        }
+      ],
+      [
+        {
+          text: '_gat_UA-37377084-3'
+        },
+        {
+          text: analytics.gatDescription
+        },
+        {
+          text: analytics.gatDuration
+        }
+      ]
+    ]
+  }) }}
+
+  <h3 class="govuk-heading-m">
+    {{ apm.header }}
+  </h3>
+  <p class="govuk-body-m">{{ apm.p1 }}</p>
+  <ul class="govuk-list govuk-list--bullet">
+    {% for bullet in apm.bullets %}
+      <li>{{ bullet }}</li>
+    {% endfor %}
+  </ul>
+  <p class="govuk-body-m">{{ apm.p2 }}</p>
+  {{ govukTable({
+    firstCellIsHeader: true,
+    caption: caption,
+    head: [
+      {
+        text: name,
+        classes: 'govuk-!-width-one-quarter'
+      },
+      {
+        text: purpose,
+        classes: 'govuk-!-width-one-half'
+      },
+      {
+        text: expires,
+        classes: 'govuk-!-width-one-quarter'
+      }
+    ],
+    rows: [
+      [
+        {
+          text: 'dtCookie'
+        },
+        {
+          text: apm.dtCookieDescription
+        },
+        {
+          text: apm.dtCookieDuration
+        }
+      ],
+      [
+        {
+          text: 'dtLatC'
+        },
+        {
+          text: apm.dtLatCDescription
+        },
+        {
+          text: apm.dtLatCDuration
+        }
+      ],
+      [
+        {
+          text: 'dtPC'
+        },
+        {
+          text: apm.dtPCDescription
+        },
+        {
+          text: apm.dtPCDuration
+        }
+      ],
+      [
+        {
+          text: 'dtSa'
+        },
+        {
+          text: apm.dtSaDescription
+        },
+        {
+          text: apm.dtSaDuration
+        }
+      ],
+      [
+        {
+          text: 'rxVisitor'
+        },
+        {
+          text: apm.rxVisitorDescription
+        },
+        {
+          text: apm.rxVisitorDuration
+        }
+      ],
+      [
+        {
+          text: 'rxvt'
+        },
+        {
+          text: apm.rxvtDescription
+        },
+        {
+          text: apm.rxvtDuration
+        }
+      ]
+    ]
+  }) }}
+    <h2 class="govuk-heading-m">{{ heading2 }}</h2>
+
+    {% set analyticsCookieRadio = govukRadios({
+      classes: 'govuk-radios',
+      idPrefix: "analytics",
+      name: "analytics",
+      fieldset: {
+        legend: {
+          text: optionsHeader1,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: analyticsCookieOptions
+    }) %}
+
+    {% set performanceCookieRadio = govukRadios({
+      classes: 'govuk-radios',
+      idPrefix: "apm",
+      name: "apm",
+      fieldset: {
+        legend: {
+          text: optionsHeader2,
+          classes: "govuk-fieldset__legend--s"
+        }
+      },
+      items: performanceCookieOptions
+    }) %}
+
+    <form class="cookie-preferences-form">
+      {{ analyticsCookieRadio }}
+      {{ performanceCookieRadio }}
+      {{ govukButton({
+        id: 'cookie-save-button',
+        text: saveText
+      })}}
+    </form>
+
+  {{ super() }}
+  </div>
+</div>
+{% endblock %}
+{% block bodyEnd %}
+  {{ super() }}
+{% endblock %}

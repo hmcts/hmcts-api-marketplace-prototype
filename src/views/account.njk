@@ -1,0 +1,86 @@
+{% extends "template.njk" %}
+
+{% set pageTitle = "Your account - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "account" %}
+{% set hideBackLink = true %}
+
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">{{ heading }}</h1>
+
+      {% set accountPanel %}
+        {{ govukSummaryList({
+          rows: [
+            { key: { text: "Name" },       value: { html: '<span data-user-name></span>' } },
+            { key: { text: "Email" },      value: { html: '<span data-user-email></span>' } }
+          ]
+        }) }}
+
+        {# POST, so no link or prefetcher can sign the user out. #}
+        <form method="post" action="/sign-out">
+          {{ govukButton({ text: signOutButton, classes: "govuk-button--secondary", attributes: { id: "sign-out", "data-action": "sign-out" } }) }}
+        </form>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <h2 class="govuk-heading-l">{{ nextSteps.heading }}</h2>
+        <ol class="govuk-list govuk-list--number">
+          {% for step in nextSteps.stepsHtml %}
+            <li>{{ step | safe }}</li>
+          {% endfor %}
+        </ol>
+      {% endset %}
+
+      {% set requestsPanel %}
+        <h2 class="govuk-heading-l">{{ requests.heading }}</h2>
+
+        <p class="govuk-body">{{ requests.intro }}</p>
+
+        {% if couldNotLoad %}
+          <p class="govuk-body" id="requests-unavailable">{{ requests.unavailable }}</p>
+        {% elif myRequests.length %}
+          {% set rows = [] %}
+          {% for request in myRequests %}
+            {% set rows = (rows.push([
+              { html: ('<a class="govuk-link apim-reference" href="' + request.href + '">' + request.reference + '</a>') if request.href else ('<span class="apim-reference">' + request.reference + '</span>') },
+              { text: requests.types[request.type] or request.type },
+              { text: request.submittedOn },
+              { text: request.status }
+            ]), rows) %}
+          {% endfor %}
+
+          {{ govukTable({
+            caption: requests.tableCaption,
+            captionClasses: "govuk-visually-hidden",
+            head: [
+              { text: requests.columnReference },
+              { text: requests.columnType },
+              { text: requests.columnSubmitted },
+              { text: requests.columnStatus }
+            ],
+            rows: rows
+          }) }}
+        {% else %}
+          <p class="govuk-body" id="requests-empty">{{ requests.emptyHtml | safe }}</p>
+        {% endif %}
+      {% endset %}
+
+      {{ govukTabs({
+        items: [
+          { label: heading,           id: "tab-account",  panel: { html: accountPanel } },
+          { label: requests.tabLabel, id: "tab-requests", panel: { html: requestsPanel } }
+        ]
+      }) }}
+
+    </div>
+  </div>
+
+{% endblock %}

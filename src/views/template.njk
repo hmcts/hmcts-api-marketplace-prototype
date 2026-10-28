@@ -1,0 +1,163 @@
+{% extends "govuk/template.njk" %}
+
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+{% from "govuk/components/cookie-banner/macro.njk" import govukCookieBanner %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "./components/back-link.njk" import goBack %}
+
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block head %}
+  {% if gtmContainerId %}
+    <!-- Google Tag Manager -->
+    <script {%- if cspNonce %} nonce="{{ cspNonce }}"{% endif %}>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push(
+        {'gtm.start': new Date().getTime(),event:'gtm.js'}
+      );var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','{{ gtmContainerId }}');
+    </script>
+  {% endif %}
+
+  {% if jstag %}
+    <!-- Dynatrace -->
+    <script {%- if cspNonce %} nonce="{{ cspNonce }}"{% endif %} type="text/javascript" src="{{ jstag }}" crossorigin="anonymous">
+    </script>
+  {% endif %}
+
+  {% include "webpack/css.njk" %}
+{% endblock %}
+
+{% block header %}
+
+  {% set html %}
+    <p class="govuk-body">{{ cookieBannerP1 | safe }}</p>
+    <p class="govuk-body">{{ cookieBannerP2 }}</p>
+  {% endset %}
+
+  {% set acceptHtml %}
+    <p class="govuk-body">You’ve accepted additional cookies. You can <a class="govuk-link" href="/cookies">change your cookie settings</a> at any time.</p>
+  {% endset %}
+
+  {% set rejectHtml %}
+    <p class="govuk-body">You’ve rejected additional cookies. You can <a class="govuk-link" href="/cookies">change your cookie settings</a> at any time.</p>
+  {% endset %}
+
+  {{ govukCookieBanner({
+    classes: 'cookie-banner',
+    ariaLabel: cookieBannerH1,
+    hidden: true,
+    messages: [
+      {
+        classes: 'cookie-banner-message',
+        headingText: cookieBannerH1,
+        html: html,
+        actions: [
+        {
+          classes: 'cookie-banner-accept-button',
+          text: cookieBannerAcceptButton,
+          type: "button"
+        },
+        {
+          classes: 'cookie-banner-reject-button',
+          text: cookieBannerRejectButton,
+          type: "button"
+        },
+        {
+          text: cookieBannerViewCookies,
+          href: "/cookies"
+        }
+      ]
+      },
+      {
+        classes: 'cookie-banner-accept-message',
+        html: acceptHtml,
+        role: "alert",
+        hidden: true,
+        actions: [
+        {
+          classes: 'cookie-banner-hide-button',
+          text: cookieBannerHideButton
+        }
+      ]
+      },
+      {
+        classes: 'cookie-banner-reject-message',
+        html: rejectHtml,
+        role: "alert",
+        hidden: true,
+        actions: [
+        {
+          classes: 'cookie-banner-hide-button',
+          text: cookieBannerHideButton
+        }
+      ]
+      }
+    ]
+  }) }}
+
+  {{ govukHeader({
+    containerClasses: "govuk-width-container"
+  }) }}
+
+  {# Pages set `section` to highlight the current navigation item. `user` comes from the
+     session, via res.locals in app.ts. The signed-in items lead to journeys that need an
+     account — requireSignIn is what actually refuses a signed-out request, this only
+     declines to advertise it.
+
+     The service name links to marketplaceSiteUrl, which defaults to this service's own
+     root now the GitHub Pages content has moved here. It stays configuration in case the
+     front door moves again. #}
+  {{ govukServiceNavigation({
+    serviceName: serviceName | safe,
+    serviceUrl: marketplaceSiteUrl or ((globals.basePath if globals.basePath) + "/"),
+    navigation: ([
+      { href: "/api-catalogue",    text: nav.catalogue,     active: section == "catalogue" },
+      { href: "/get-started",      text: nav.getStarted,    active: section == "get-started" },
+      { href: "/documentation",    text: nav.documentation, active: section == "documentation" },
+      { href: "/help",             text: nav.help,          active: section == "help" }
+    ].concat(
+      [{ href: "/account/applications", text: nav.applications, active: section == "applications" }] if user else []
+    ).concat([
+      {
+        href: "/account" if user else "/sign-in",
+        text: nav.account if user else nav.signIn,
+        active: section == "account"
+      }
+    ])) if nav else []
+  }) }}
+
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: phaseTag
+    },
+    html: feedback
+  }) }}
+  {# Pages set `breadcrumbs` to a govukBreadcrumbs items array, or leave it unset. #}
+  {% if breadcrumbs %}
+    {{ govukBreadcrumbs({ items: breadcrumbs }) }}
+  {% elif not hideBackLink %}
+    {{ goBack(text = backLink, cspNonce = cspNonce) }}
+  {% endif %}
+{% endblock %}
+
+
+{% block footer %}
+  {{ govukFooter({
+    meta: {
+      items: footerLinks
+    },
+    contentLicence: contentLicence,
+    copyright: copyright
+  }) }}
+{% endblock %}
+
+
+{% block bodyEnd %}
+  {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+  {% include "webpack/js.njk" %}
+{% endblock %}

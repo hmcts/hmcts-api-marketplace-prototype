@@ -1,0 +1,217 @@
+{% extends "template.njk" %}
+
+{% set pageTitle = "Producer standards - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "documentation" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Documentation", href: "/documentation" }
+] %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl">Producer standards</h1>
+
+    <p class="govuk-body-l">
+      Standards and requirements for listing an API on the HMCTS API Marketplace.
+    </p>
+
+    <h2 class="govuk-heading-m" id="contents">Contents</h2>
+
+    <ol class="govuk-list govuk-list--number">
+      <li><a class="govuk-link" href="#technical-requirements">Technical requirements</a></li>
+      <li><a class="govuk-link" href="#eligibility">Eligibility criteria</a></li>
+      <li><a class="govuk-link" href="#specification-quality">Specification quality</a></li>
+      <li><a class="govuk-link" href="#data-governance">Data governance</a></li>
+    </ol>
+
+    <p class="govuk-body">
+      These standards are based on the HMCTS RESTful API Standards and the AMP Catalogue onboarding
+      process. For the steps to get your API listed, read the
+      <a class="govuk-link" href="/documentation/producer-guidance">producer guidance</a>. If you have questions, contact the marketplace team at <a class="govuk-link" href="mailto:APIMarketplace@hmcts.net">APIMarketplace@hmcts.net</a>.
+    </p>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-l" id="technical-requirements">1. Technical requirements</h2>
+
+    <p class="govuk-body">
+      Your API must meet the following technical requirements before it can be listed on the
+      marketplace.
+    </p>
+
+    <h3 class="govuk-heading-m">OpenAPI 3.x specification</h3>
+
+    <p class="govuk-body">
+      Your API must have a valid OpenAPI 3.x specification file at this path in your repository:
+    </p>
+
+    <p class="govuk-body">
+      <code>src/main/resources/openapi/openapi-spec.yml</code>
+    </p>
+
+    <p class="govuk-body">The specification must include:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li><code>info.title</code> &mdash; a clear, human-readable API name</li>
+      <li><code>info.description</code> &mdash; a summary of what the API does</li>
+      <li><code>info.version</code> &mdash; the current version, stamped automatically from the GitHub release tag</li>
+      <li>at least one path with at least one operation</li>
+    </ul>
+
+    <h3 class="govuk-heading-m">Servers block</h3>
+
+    <p class="govuk-body">
+      The <code>servers</code> block must follow the standard HMCTS pattern. Do not use SwaggerHub
+      virtual server URLs.
+    </p>
+
+    {{ govukWarningText({
+      text: "Do not hand-bump the version. It is stamped automatically when you cut a GitHub release.",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <h3 class="govuk-heading-m">Spectral linting</h3>
+
+    <p class="govuk-body">
+      Your specification must pass the standard Spectral OAS3 ruleset with no errors.
+    </p>
+
+    <h3 class="govuk-heading-m">GitHub Actions workflow</h3>
+
+    <p class="govuk-body">
+      Add <code>.github/workflows/publish-api-docs.yml</code> to your repository to publish
+      documentation automatically on each release. This triggers the shared <code>amp-catalog</code>
+      workflow, pinned to <code>@v1</code>.
+    </p>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-l" id="eligibility">2. Eligibility criteria</h2>
+
+    {{ govukWarningText({
+      text: "Only external APIs may be listed. Internal APIs must not be exposed publicly via GitHub Pages.",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <section class="app-table-wrapper" aria-label="API eligibility by type" tabindex="0">
+    {{ govukTable({
+      caption: "API eligibility by type",
+      captionClasses: "govuk-table__caption--m",
+      firstCellIsHeader: true,
+      head: [
+        { text: "API type" },
+        { text: "Eligible?" },
+        { text: "Notes" }
+      ],
+      rows: [
+        [
+          { text: "External, documentation-only" },
+          { text: "Eligible" },
+          { text: "Spec is world-readable via GitHub Pages" }
+        ],
+        [
+          { text: "External, with mock execution" },
+          { text: "Eligible" },
+          { text: "Try-it disabled; documentation only in the marketplace" }
+        ],
+        [
+          { text: "Internal / developers only" },
+          { text: "Not eligible" },
+          { text: "Must wait for the APIM Developer Portal" }
+        ]
+      ]
+    }) }}
+    </section>
+
+    <p class="govuk-body">
+      Your API repository must also be <strong>public on GitHub</strong>. The documentation site is
+      served via GitHub Pages and must return HTTP 200 at
+      <code>https://hmcts.github.io/&lt;repo-name&gt;/</code> before your listing goes live.
+    </p>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-l" id="specification-quality">3. Specification quality</h2>
+
+    <p class="govuk-body">
+      Your OpenAPI specification should meet the following quality standards. These directly power the
+      information shown on each API&rsquo;s detail page.
+    </p>
+
+    <dl class="govuk-body">
+      <dt class="govuk-!-font-weight-bold">Title</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">Clear, human-readable name &mdash; not the repository slug.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Description</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">A consumer-focused summary of what the API does, who it is for, and what data it returns. Shown under &ldquo;What does this API do?&rdquo;.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Contact email</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">A real team inbox &mdash; not the marketplace team&rsquo;s address.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Endpoint summaries</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">Every operation must have a summary and a description.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Schema definitions</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">All request and response bodies defined as named schemas, with property descriptions.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Security scheme</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">Authentication method declared, for example <code>bearerAuth</code>, and applied to all protected operations.</dd>
+
+      <dt class="govuk-!-font-weight-bold">Error responses</dt>
+      <dd class="govuk-!-margin-left-0 govuk-!-margin-bottom-4">400, 401, 404 and 500 responses documented for each operation.</dd>
+    </dl>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <h2 class="govuk-heading-l" id="data-governance">4. Data governance</h2>
+
+    <p class="govuk-body">
+      As an API producer you are a data controller, or a joint data controller, for the data exposed
+      through your API.
+    </p>
+
+    <h3 class="govuk-heading-m">Data sharing agreements</h3>
+
+    {{ govukWarningText({
+      text: "Do not approve access to any APIs without approval from the Data Access Panel (DAP).",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <h3 class="govuk-heading-m">Data classification</h3>
+
+    <section class="app-table-wrapper" aria-label="Eligibility by data classification" tabindex="0">
+    {{ govukTable({
+      caption: "Eligibility by data classification",
+      captionClasses: "govuk-table__caption--m",
+      firstCellIsHeader: true,
+      head: [
+        { text: "Classification" },
+        { text: "Eligibility" }
+      ],
+      rows: [
+        [
+          { text: "Official" },
+          { text: "Eligible - standard data protection controls required" }
+        ],
+        [
+          { text: "Official-Sensitive" },
+          { text: "Eligible with enhanced governance - formal DSA required" }
+        ],
+        [
+          { text: "Secret / Top Secret" },
+          { text: "Not eligible for marketplace listing" }
+        ]
+      ]
+    }) }}
+    </section>
+
+  </div>
+</div>
+
+{% endblock %}

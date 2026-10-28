@@ -1,0 +1,52 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Application - Manage applications - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Your account", href: "/account" },
+  { text: "Manage applications", href: "/account/applications" }
+] %}
+
+{# The real service renders this page from the backend. Here applications.js fills it
+   from the browser's own store, using the id in the query string. #}
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl" data-application-name></h1>
+
+    <h2 class="govuk-heading-m">Application details</h2>
+    <dl class="govuk-summary-list" id="application-details"></dl>
+
+    <h2 class="govuk-heading-m">Authorisation details</h2>
+    <dl class="govuk-summary-list" id="authorisation-details"></dl>
+
+    <h2 class="govuk-heading-m">APIs</h2>
+    <p class="govuk-body" id="apis-empty" hidden>This application has no APIs yet.</p>
+    <dl class="govuk-summary-list" id="application-apis"></dl>
+
+    {{ govukButton({
+      text: "Add or remove APIs",
+      href: "../apis/",
+      classes: "govuk-button--secondary",
+      attributes: { id: "change-apis" }
+    }) }}
+
+    <p class="govuk-body">
+      When this application has been tested,
+      <a class="govuk-link" href="../../production-credentials/">request production credentials</a> for it.
+    </p>
+
+    {{ govukButton({
+      text: "Delete application",
+      classes: "govuk-button--warning",
+      attributes: { id: "delete-application" }
+    }) }}
+
+    <p class="govuk-body"><a class="govuk-link" href="../">Back to your applications</a></p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Add new application - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "applications" %}
+{% set breadcrumbs = [
+  { text: "Home", href: "/" },
+  { text: "Your account", href: "/account" },
+  { text: "Manage applications", href: "/account/applications" }
+] %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl">Add new application</h1>
+
+    <p class="govuk-body">To try an API with dummy data using Try it now:</p>
+    <ol class="govuk-list govuk-list--number">
+      <li>create an application</li>
+      <li>choose the APIs you want to test</li>
+      <li>get your Try it now credentials and keys, which are issued automatically</li>
+      <li>test your software with the APIs</li>
+    </ol>
+
+    {{ govukWarningText({
+      text: "You must comply with the guidelines for using HMCTS APIs.",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <p class="govuk-body">
+      Read the <a class="govuk-link" href="/documentation/consumer-guidance">consumer guidance</a> if you have not already.
+    </p>
+
+    {{ govukButton({ text: "Continue", href: "/account/applications/new/details", attributes: { id: "new-application-start" } }) }}
+
+    <p class="govuk-body"><a class="govuk-link" href="/account/applications">Cancel</a></p>
+  </div>
+</div>
+{% endblock %}
