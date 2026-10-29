@@ -48,5 +48,7 @@
   { "view": "production-credentials/form.njk",          "url": "/account/production-credentials/" },
   { "view": "production-credentials/check-answers.njk", "url": "/account/production-credentials/check-answers/" },
   { "view": "production-credentials/confirmation.njk",  "url": "/account/production-credentials/confirmation/" },
-  { "view": "production-credentials/view.njk",          "url": "/account/production-credentials/view/" }
+  { "view": "production-credentials/view.njk",          "url": "/account/production-credentials/view/" },
+
+  { "view": "prototype-settings.njk", "url": "/prototype-settings/" }
 ]

@@ -69,6 +69,23 @@ python3 -m http.server 3100 --directory docs
   pages). A template branch that needs server data (e.g. `{% if applicationItems.length %}`) never renders
   in the static build unless the JS supplies it.
 - Copy for translated pages: `src/locales/en/`. Styles: `src/assets/scss/`. Seed APIs: `src/data/apis.json`.
+
+## Feature switches
+
+Every Phase 2 feature goes behind a switch, so the prototype can show feature X without feature Y and an
+undecided feature can be merged switched off.
+
+- List it in `src/data/features.json` with an `id`, `name`, `description` and `default` (usually `false`
+  until the team has seen it).
+- In templates: `data-feature="id"` shows an element only when the feature is on, `data-feature-off="id"`
+  only when it is off (the MVP behaviour it replaces), and a page that belongs to the feature wraps its
+  content in `data-feature-page="id"`. In scripts: `import { features } from './features.js'` and check
+  `features.isOn('id')` before doing anything for it.
+- People switch features on the Prototype settings page (footer link) or with a link: `?features=a,b` (exactly
+  those on), `?features=none`, `?features=default`. The choice is kept in their browser only.
+- When a feature is taken into the real service and the prototype is re-synced, remove its switch and keep the
+  feature's behaviour as the baseline.
+- Tag milestones worth returning to (for example `phase2-demo-1`) with an annotated git tag.
 - `docs/` is generated output — edit `src/` and rebuild; don't hand-edit `docs/`.
 
 ## Rules
