@@ -1,6 +1,6 @@
 # API Marketplace MVP: handover for phase 2 design and prototyping
 
-Written 29 October 2026 by the Claude session that has been working on `web-api-marketplace` with
+Written 29 October 2026 (requester-email facts corrected the same day against `service-api-marketplace` master) by the Claude session that has been working on `web-api-marketplace` with
 Aman Singh. It covers what the MVP does, why, and what is open. It is built from the code, the
 READMEs, merged and open PRs, and what Aman told me in conversation.
 
@@ -71,7 +71,7 @@ known limit. **By hand** is done offline by people.
 | Production credentials request | Built to submission. Review and issuing **by hand**. |
 | My requests and account page | Built |
 | Content pages | Built, trimmed down |
-| Emails to the requester | Not built |
+| Email to the requester on submit | Built (backend) |
 
 ### 2.1 Browse the catalogue
 
@@ -125,7 +125,7 @@ Then **check answers**, then a **confirmation page** with a reference like `PCR-
 
 - Stored in the **backend** (AMP-1288, PR [120](https://github.com/hmcts/web-api-marketplace/pull/120)). Listed under **My requests** on the account page, each linking to a read-only view.
 - **Nothing is issued by the system.** The backend says so in its code and docs: client ids, secrets, keys and publisher ids "are still created by hand offline; the Data Access Panel decides".
-- On submit the backend emails the Panel, the IAO and the marketplace team through GOV.UK Notify. **The requester is deliberately not a recipient.** The requester's own address goes into the email body in backend PR [168](https://github.com/hmcts/service-api-marketplace/pull/168) (AMP-1352, open).
+- On submit the backend sends two kinds of email through GOV.UK Notify: a **confirmation to the requester** (application name, APIs and reference; backend commit `e441aff`, 20 October 2026) and a **review email to each configured reviewer inbox** (the Panel, the IAO and the marketplace team) with the full answers. A failed send is logged and does not undo the request. The requester's own address goes into the review email in backend PR [168](https://github.com/hmcts/service-api-marketplace/pull/168) (AMP-1352, open). There is no separate Producer notification.
 - **One production request per application** (backend, merged; `409` on a second). The web side, PR [150](https://github.com/hmcts/web-api-marketplace/pull/150) (open), shows "You have asked for production credentials for this application. View production request PCR-..." and drops that application from the form's radios.
 - **Users cannot delete a request** (PR [146](https://github.com/hmcts/web-api-marketplace/pull/146)). The backend still has a delete call that the web app no longer uses.
 - The question set was trimmed in stages (PRs [118](https://github.com/hmcts/web-api-marketplace/pull/118), [119](https://github.com/hmcts/web-api-marketplace/pull/119), [123](https://github.com/hmcts/web-api-marketplace/pull/123)). I removed fields on Aman's instruction. I do not have the reasons from the panel's side.
@@ -201,7 +201,7 @@ conformance audit of the old site (`design/audit/`).
 
 ### Gaps and tech debt (from the README "Outstanding" list and my own notes)
 
-- **No emails to the requester.** The backend emails the reviewers only. The web app has a Notify stand-in (`services/Notify.ts`) for a "production request received" email, and it sends nothing (the log says "GOV.UK Notify is not connected"). **Unsure** whether any requester email is planned. The `notify.showEmailsOnPage` config and a README line about an on-screen email preview are leftovers: the preview component was deleted.
+- **No decision email to the requester.** The backend confirms receipt to the requester, but nothing tells them the outcome, because the decision happens offline. The web app also has its own Notify stand-in (`services/Notify.ts`) for a "production request received" email that sends nothing (the log says "GOV.UK Notify is not connected"); the backend email makes it redundant. The `notify.showEmailsOnPage` config and a README line about an on-screen email preview are leftovers: the preview component was deleted.
 - **No feedback survey.** The phase banner links to `#`.
 - **No analytics or RUM.** The GTM and Dynatrace identifiers are empty on purpose.
 - **App Insights is stubbed** (`APPLICATIONINSIGHTS_ENABLED: 'false'`).

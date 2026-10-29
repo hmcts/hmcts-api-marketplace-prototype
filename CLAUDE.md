@@ -15,10 +15,14 @@ from `main`. The repo is **public**.
 ## Read before designing
 
 - [`design/mvp-handover.md`](design/mvp-handover.md) — what the MVP does, the decisions behind it, the
-  constraints, and a glossary. Start here.
-- [`design/phase-2-candidates.md`](design/phase-2-candidates.md) — what is parked or marked Phase 2.
-  **Not an agreed scope**: ask before treating any item as decided, and log decisions there.
-- [`design/flows/`](design/flows/) — product flow diagrams coloured by MVP status.
+  constraints, and a glossary. A snapshot of the code on 29 October 2026; check the code when it matters.
+- **The design documents are not kept in this repo.** The flow diagrams, journeys, personas, Build
+  Readiness, Gap Analysis, decisions log, open questions, Phase 2 drafts and the Jira-import user stories
+  keep changing, so read them where they live, each time, rather than copying them here or into memory.
+  Where they are is listed in `CLAUDE.local.md` (local to Aman's machine, not committed: the links are
+  private). If that file is missing, ask Aman for the sources.
+- **Phase 2 scope is not decided.** The team decides which Phase 2 items get delivered. Don't treat a
+  Phase 2 draft or candidate as agreed.
 
 ## Build and run
 
@@ -53,4 +57,5 @@ python3 -m http.server 3100 --directory docs
   "application", "Going live", "My requests"). See section 5 of the handover.
 - One branch and one PR per change. Don't commit, push or merge without being asked, and keep each change
   to what was asked.
-- Design material goes in `design/`, never `docs/` (public site).
+- Design notes for this repo go in `design/`, never `docs/` (the public site, wiped on every build). The
+  repo is public: no meeting notes, colleagues' names or private links.
