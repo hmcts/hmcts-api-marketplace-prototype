@@ -1,0 +1,4 @@
+{
+  "_note": "Phase 2 features that can be switched on and off in the prototype. 'default' is what everyone sees until they change it on the Prototype settings page or with ?features= in a link. Add an entry when a feature is built; remove it once the feature is in the real service and the prototype has been re-synced.",
+  "features": []
+}

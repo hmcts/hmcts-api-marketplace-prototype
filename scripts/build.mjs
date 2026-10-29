@@ -51,6 +51,9 @@ function relativise (html, prefix) {
 }
 
 const globals = await locale('template')
+// Not in the real service: where prototype features are switched on and off.
+globals.footerLinks = globals.footerLinks.concat({ text: 'Prototype settings', href: '/prototype-settings' })
+const features = JSON.parse(await readFile(join(root, 'src/data/features.json'), 'utf8')).features
 // The real service lists APIs from the catalogue backend. These seed the checkboxes instead.
 const apiItems = JSON.parse(await readFile(join(root, 'src/data/apis.json'), 'utf8'))
 
@@ -78,6 +81,8 @@ await writeFile(join(out, 'assets/main.css'), css.css)
 
 await cp(join(govuk, 'govuk/assets'), join(out, 'assets'), { recursive: true })
 await cp(join(root, 'src/assets/javascripts'), join(out, 'assets'), { recursive: true })
+// The feature list as a module, so features.js has it before any page script runs.
+await writeFile(join(out, 'assets/feature-list.js'), `export default ${JSON.stringify(features, null, 2)}\n`)
 // main.js imports this as a sibling module, so it ships from the package rather than source control.
 await cp(join(govuk, 'govuk/govuk-frontend.min.js'), join(out, 'assets/govuk-frontend.min.js'))
 await writeFile(join(out, '.nojekyll'), '')
