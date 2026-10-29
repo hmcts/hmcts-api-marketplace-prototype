@@ -12,6 +12,29 @@ prototyped here from that baseline, for demonstration and discussion. Nothing he
 Published at <https://hmcts.github.io/hmcts-api-marketplace-prototype/> — GitHub Pages serves `docs/`
 from `main`. The repo is **public**.
 
+## The real product is the baseline
+
+What is built lives in two repos. They are the source of truth for the current product, not this repo
+and not the handover:
+
+- [`hmcts/web-api-marketplace`](https://github.com/hmcts/web-api-marketplace): the front end. Default
+  branch `master`. Views in `src/main/views/`, which `src/views/` here was copied from.
+- [`hmcts/service-api-marketplace`](https://github.com/hmcts/service-api-marketplace): the backend. Default
+  branch `master`. What it stores, emails and enforces (limits, one production request per application).
+
+Read them alongside; don't link them in (no submodules, no shared packages). Local clone paths are in
+`CLAUDE.local.md`.
+
+**Ported from:** `web-api-marketplace` `master` at `1a792f3` (28 October 2026). PR #79 didn't record
+the commit; it was matched by comparing the views. Of the 51 views in both repos, 39 were identical; the
+other 12 were changed to fake the backend (PR #79 lists them). Update this line whenever the prototype is
+re-synced.
+
+**Before prototyping a change,** compare the pages involved with the same files on `web-api-marketplace`
+`master`. If the real service has moved on, bring the prototype's pages up to date first, as a separate
+change, so the design starts from what is live. Keep the views close to the real ones so a phase 2 change
+can be carried back.
+
 ## Read before designing
 
 - [`design/mvp-handover.md`](design/mvp-handover.md) — what the MVP does, the decisions behind it, the
@@ -37,8 +60,7 @@ python3 -m http.server 3100 --directory docs
 
 ## How it fits together
 
-- Pages: `src/views/**` (Nunjucks + GOV.UK Frontend macros), copied from the real service. Keep them close
-  to the real templates so a phase 2 change can be carried back.
+- Pages: `src/views/**` (Nunjucks + GOV.UK Frontend macros), copied from the real service (see above).
 - Every page needs an entry in `scripts/routes.json` or it is not rendered.
 - `scripts/build.mjs` renders each route once, **at build time, with no data**. Root-relative links are
   rewritten to relative ones so the site works under the Pages subdirectory.
