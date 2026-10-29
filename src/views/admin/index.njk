@@ -1,0 +1,32 @@
+{% extends "template.njk" %}
+
+{% set pageTitle = "Admin - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "admin" %}
+{% set breadcrumbs = [{ text: "Home", href: "/" }] %}
+
+{# Not in the real service, which has no admin role yet. A read-only view for the Marketplace
+   Team, built by admin.js from made-up seed data plus whatever this browser has created. #}
+{% block content %}
+<div data-feature-page="admin-dashboard">
+{% include "admin/denied.njk" %}
+
+<div id="admin-content" hidden>
+  <span class="govuk-caption-xl">Marketplace Team</span>
+  <h1 class="govuk-heading-xl">Admin</h1>
+
+  <div class="govuk-grid-row" id="admin-counts"></div>
+
+  <h2 class="govuk-heading-l">Waiting longest</h2>
+  <p class="govuk-body">Production credentials requests that are still Submitted, oldest first.</p>
+  <div id="admin-waiting"></div>
+  <p class="govuk-body"><a class="govuk-link" href="/admin/requests">See all production requests</a></p>
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  <p class="govuk-body">
+    You are signed in as <strong data-user-name></strong> (<span data-user-email></span>).
+    <a class="govuk-link" href="/" data-action="sign-out">Sign out</a>
+  </p>
+</div>
+</div>
+{% endblock %}

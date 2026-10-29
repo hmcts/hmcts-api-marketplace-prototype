@@ -4,6 +4,7 @@ import './features.js'
 import { user } from './store.js'
 import './applications.js'
 import './production-credentials.js'
+import './admin.js'
 import './prototype-settings.js'
 
 initAll()
@@ -19,6 +20,14 @@ function applyNavigation (signedIn) {
   const last = items[items.length - 1]
   const link = last && last.querySelector('a')
   if (!link) return
+
+  if (signedIn && signedIn.role === 'admin') {
+    // An admin is not a consumer: Admin replaces Your account and Applications.
+    link.textContent = 'Admin'
+    link.setAttribute('href', link.getAttribute('href').replace(/(sign-in|account)\/?$/, 'admin/'))
+    last.classList.toggle('govuk-service-navigation__item--active', /\/admin\//.test(window.location.pathname))
+    return
+  }
 
   if (signedIn) {
     link.textContent = 'Your account'
@@ -49,7 +58,7 @@ document.addEventListener('click', event => {
   if (!action) return
   if (action.dataset.action === 'sign-in') {
     event.preventDefault()
-    user.signIn()
+    user.signIn(action.dataset.role)
     window.location.href = action.getAttribute('href') || './'
   }
   if (action.dataset.action === 'sign-out') {

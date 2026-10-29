@@ -83,6 +83,8 @@ await cp(join(govuk, 'govuk/assets'), join(out, 'assets'), { recursive: true })
 await cp(join(root, 'src/assets/javascripts'), join(out, 'assets'), { recursive: true })
 // The feature list as a module, so features.js has it before any page script runs.
 await writeFile(join(out, 'assets/feature-list.js'), `export default ${JSON.stringify(features, null, 2)}\n`)
+// Made-up users, applications and requests for the admin pages, fetched by admin.js.
+await cp(join(root, 'src/data/admin-seed.json'), join(out, 'assets/admin-seed.json'))
 // main.js imports this as a sibling module, so it ships from the package rather than source control.
 await cp(join(govuk, 'govuk/govuk-frontend.min.js'), join(out, 'assets/govuk-frontend.min.js'))
 await writeFile(join(out, '.nojekyll'), '')

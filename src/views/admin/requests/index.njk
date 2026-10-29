@@ -1,0 +1,42 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Production requests - Admin - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "admin" %}
+{% set breadcrumbs = [{ text: "Home", href: "/" }, { text: "Admin", href: "/admin" }] %}
+
+{% block content %}
+<div data-feature-page="admin-dashboard">
+{% include "admin/denied.njk" %}
+
+<div id="admin-content" hidden>
+  <h1 class="govuk-heading-xl">Production credentials requests</h1>
+  <p class="govuk-body">
+    Every production credentials request, oldest first. Review happens outside the service today, so every
+    request is still Submitted.
+  </p>
+
+  <form method="get" action="/admin/requests/" novalidate>
+    {{ govukSelect({
+      id: "status",
+      name: "status",
+      label: { text: "Status", classes: "govuk-label--s" },
+      items: [
+        { value: "", text: "All statuses" },
+        { value: "SUBMITTED", text: "Submitted" },
+        { value: "IN_REVIEW", text: "In review" },
+        { value: "MORE_INFORMATION_NEEDED", text: "More information needed" },
+        { value: "APPROVED", text: "Approved" },
+        { value: "DECLINED", text: "Declined" }
+      ]
+    }) }}
+    {{ govukButton({ text: "Filter", classes: "govuk-button--secondary", attributes: { id: "requests-filter" } }) }}
+  </form>
+
+  <p class="govuk-body" id="admin-results-count"></p>
+  <div id="admin-requests"></div>
+</div>
+</div>
+{% endblock %}
