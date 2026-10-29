@@ -1,0 +1,31 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Users - Admin - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "admin" %}
+{% set breadcrumbs = [{ text: "Home", href: "/" }, { text: "Admin", href: "/admin" }] %}
+
+{% block content %}
+{% include "admin/denied.njk" %}
+
+<div id="admin-content" hidden>
+  <h1 class="govuk-heading-xl">Users</h1>
+  <p class="govuk-body">Everyone who has registered, newest first.</p>
+
+  <form method="get" action="/admin/users/" novalidate>
+    {{ govukInput({
+      label: { text: "Search by name or email", classes: "govuk-label--s" },
+      id: "q",
+      name: "q",
+      classes: "govuk-!-width-one-half",
+      spellcheck: false
+    }) }}
+    {{ govukButton({ text: "Search", classes: "govuk-button--secondary", attributes: { id: "users-search" } }) }}
+  </form>
+
+  <p class="govuk-body" id="admin-results-count"></p>
+  <div id="admin-users"></div>
+</div>
+{% endblock %}

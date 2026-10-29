@@ -1,0 +1,29 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set pageTitle = "Application - Admin - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "admin" %}
+{% set breadcrumbs = [{ text: "Home", href: "/" }, { text: "Admin", href: "/admin" }, { text: "Applications", href: "/admin/applications" }] %}
+
+{% block content %}
+{% include "admin/denied.njk" %}
+
+<div id="admin-content" hidden>
+  <span class="govuk-caption-l">Application</span>
+  <h1 class="govuk-heading-xl" id="admin-heading"></h1>
+
+  {{ govukSummaryList({ rows: [], attributes: { id: "admin-application-details" } }) }}
+
+  {{ govukInsetText({
+    text: "Admins cannot see an application's client secret or subscription keys. Only the application's owner can."
+  }) }}
+
+  <h2 class="govuk-heading-l">APIs</h2>
+  <div id="admin-application-apis"></div>
+
+  <h2 class="govuk-heading-l">Production credentials request</h2>
+  <div id="admin-application-request"></div>
+</div>
+{% endblock %}

@@ -48,5 +48,13 @@
   { "view": "production-credentials/form.njk",          "url": "/account/production-credentials/" },
   { "view": "production-credentials/check-answers.njk", "url": "/account/production-credentials/check-answers/" },
   { "view": "production-credentials/confirmation.njk",  "url": "/account/production-credentials/confirmation/" },
-  { "view": "production-credentials/view.njk",          "url": "/account/production-credentials/view/" }
+  { "view": "production-credentials/view.njk",          "url": "/account/production-credentials/view/" },
+
+  { "view": "admin/index.njk",                "url": "/admin/" },
+  { "view": "admin/users/index.njk",          "url": "/admin/users/" },
+  { "view": "admin/users/detail.njk",         "url": "/admin/users/detail/" },
+  { "view": "admin/applications/index.njk",   "url": "/admin/applications/" },
+  { "view": "admin/applications/detail.njk",  "url": "/admin/applications/detail/" },
+  { "view": "admin/requests/index.njk",       "url": "/admin/requests/" },
+  { "view": "admin/requests/detail.njk",      "url": "/admin/requests/detail/" }
 ]

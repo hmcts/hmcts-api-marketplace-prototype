@@ -103,3 +103,13 @@ img.court-image {
   min-width: 40px;
   max-width: 60px;
 }
+
+// Admin tables have more columns than a phone can show. They scroll inside this box,
+// which is focusable so keyboard users can scroll it too, instead of widening the page.
+.app-table-scroll {
+  overflow-x: auto;
+
+  &:focus {
+    outline: $govuk-focus-width solid $govuk-focus-colour;
+  }
+}

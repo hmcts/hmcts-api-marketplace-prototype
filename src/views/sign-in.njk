@@ -24,6 +24,19 @@
       href: "../account/",
       attributes: { id: "sign-in", "data-action": "sign-in" }
     }) }}
+
+    <h2 class="govuk-heading-m">Marketplace Team</h2>
+    <p class="govuk-body">
+      To see the admin pages, sign in as <strong>Alex Admin</strong> (marketplace.admin@example.com), a
+      made-up member of the Marketplace Team. The real service has no admin role yet.
+    </p>
+
+    {{ govukButton({
+      text: "Sign in as an admin (Marketplace Team)",
+      href: "../admin/",
+      classes: "govuk-button--secondary",
+      attributes: { id: "sign-in-admin", "data-action": "sign-in", "data-role": "admin" }
+    }) }}
   </div>
 </div>
 {% endblock %}

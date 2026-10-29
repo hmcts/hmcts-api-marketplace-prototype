@@ -5,11 +5,21 @@ const USER_KEY = 'ampPrototypeUser'
 const APPS_KEY = 'ampPrototypeApplications'
 
 // The same fixed user as EntraBypass in web-api-marketplace, so screenshots match.
-const DUMMY_USER = {
+export const DUMMY_USER = {
   oid: '00000000-0000-4000-8000-00000000d0e0',
   email: 'john.doe@example.com',
   name: 'John Doe'
 }
+
+// A Marketplace Team member, for the admin pages. The real service has no admin role yet.
+const ADMIN_USER = {
+  oid: '00000000-0000-4000-8000-0000000ad000',
+  email: 'marketplace.admin@example.com',
+  name: 'Alex Admin',
+  role: 'admin'
+}
+
+const LAST_SIGN_IN_KEY = 'ampPrototypeLastSignIn'
 
 function read (key, fallback) {
   try {
@@ -30,9 +40,19 @@ export const user = {
   current () {
     return read(USER_KEY, null)
   },
-  signIn () {
-    write(USER_KEY, DUMMY_USER)
-    return DUMMY_USER
+  signIn (role) {
+    const signedIn = role === 'admin' ? ADMIN_USER : DUMMY_USER
+    write(USER_KEY, signedIn)
+    if (signedIn === DUMMY_USER) write(LAST_SIGN_IN_KEY, new Date().toISOString())
+    return signedIn
+  },
+  isAdmin () {
+    const current = this.current()
+    return !!current && current.role === 'admin'
+  },
+  // When the example user last signed in, for the admin pages' Users table.
+  lastSignIn () {
+    return read(LAST_SIGN_IN_KEY, null)
   },
   signOut () {
     try {

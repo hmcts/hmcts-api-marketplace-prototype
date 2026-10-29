@@ -1,0 +1,27 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = "Production request - Admin - HMCTS API Marketplace - GOV.UK" %}
+{% set section = "admin" %}
+{% set breadcrumbs = [{ text: "Home", href: "/" }, { text: "Admin", href: "/admin" }, { text: "Production requests", href: "/admin/requests" }] %}
+
+{% block content %}
+{% include "admin/denied.njk" %}
+
+<div id="admin-content" hidden>
+  <span class="govuk-caption-l">Production credentials request</span>
+  <h1 class="govuk-heading-xl" id="admin-heading"></h1>
+
+  <p class="govuk-body">
+    Status: <strong class="govuk-tag govuk-tag--blue" id="admin-request-status"></strong>
+    <br>Submitted <span id="admin-request-submitted"></span>
+  </p>
+
+  <h2 class="govuk-heading-m">Who asked</h2>
+  {{ govukSummaryList({ rows: [], attributes: { id: "admin-request-who" } }) }}
+
+  <h2 class="govuk-heading-m">Their answers</h2>
+  {{ govukSummaryList({ rows: [], attributes: { id: "admin-request-answers" } }) }}
+</div>
+{% endblock %}
