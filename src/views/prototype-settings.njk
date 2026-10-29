@@ -1,0 +1,54 @@
+{% extends "template.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set pageTitle = "Prototype settings - HMCTS API Marketplace - GOV.UK" %}
+{% set breadcrumbs = [{ text: "Home", href: "/" }] %}
+
+{# Not in the real service. Lists the switchable Phase 2 features from src/data/features.json;
+   prototype-settings.js builds the checkboxes and the shareable link. #}
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Prototype settings</h1>
+
+    <p class="govuk-body">
+      This prototype starts from the API Marketplace as it is today. Phase 2 ideas are added as features you
+      can switch on and off, so you can see one without another.
+    </p>
+
+    {{ govukInsetText({
+      text: "Your choice is kept in this browser only. It does not change what anyone else sees."
+    }) }}
+
+    <p class="govuk-body" id="features-none" hidden>There are no Phase 2 features to switch on yet.</p>
+
+    <form method="get" action="/prototype-settings/" novalidate id="features-form" hidden>
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="features-hint">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h2 class="govuk-fieldset__heading">Features</h2>
+          </legend>
+          <div id="features-hint" class="govuk-hint">Select the features to show.</div>
+          <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="features-list"></div>
+        </fieldset>
+      </div>
+
+      <div class="govuk-button-group">
+        {{ govukButton({ text: "Save settings", attributes: { id: "features-save" } }) }}
+        <a class="govuk-link" href="/prototype-settings/?features=default" id="features-reset">Go back to the defaults</a>
+      </div>
+    </form>
+
+    <div id="features-share" hidden>
+      <h2 class="govuk-heading-m">Share these settings</h2>
+      <p class="govuk-body">
+        Anyone who opens this link sees the prototype with the same features switched on. It works on any page:
+        add the same <code>?features=</code> ending to its address.
+      </p>
+      <p class="govuk-body"><a class="govuk-link" id="features-link" href="./"></a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

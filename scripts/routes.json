@@ -56,5 +56,7 @@
   { "view": "admin/applications/index.njk",   "url": "/admin/applications/" },
   { "view": "admin/applications/detail.njk",  "url": "/admin/applications/detail/" },
   { "view": "admin/requests/index.njk",       "url": "/admin/requests/" },
-  { "view": "admin/requests/detail.njk",      "url": "/admin/requests/detail/" }
+  { "view": "admin/requests/detail.njk",      "url": "/admin/requests/detail/" },
+
+  { "view": "prototype-settings.njk", "url": "/prototype-settings/" }
 ]

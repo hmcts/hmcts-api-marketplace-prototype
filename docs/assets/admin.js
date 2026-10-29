@@ -1,4 +1,5 @@
 import { user, applications, productionRequests, DUMMY_USER } from './store.js'
+import { features } from './features.js'
 
 // The admin pages. The real service has no admin role or cross-user reads yet, so this is a
 // read-only design: made-up users, applications and requests from admin-seed.json, plus the
@@ -314,6 +315,8 @@ const RENDERERS = {
 async function start () {
   const current = page()
   if (current === null || !(current in RENDERERS)) return
+  // Switched off, features.js has already replaced the page with a message.
+  if (!features.isOn('admin-dashboard')) return
 
   const content = document.getElementById('admin-content')
   const denied = document.getElementById('admin-denied')

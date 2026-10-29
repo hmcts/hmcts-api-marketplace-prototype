@@ -25,6 +25,8 @@
       attributes: { id: "sign-in", "data-action": "sign-in" }
     }) }}
 
+    {# Only when the admin dashboard feature is switched on (see Prototype settings). #}
+    <div data-feature="admin-dashboard" hidden>
     <h2 class="govuk-heading-m">Marketplace Team</h2>
     <p class="govuk-body">
       To see the admin pages, sign in as <strong>Alex Admin</strong> (marketplace.admin@example.com), a
@@ -37,6 +39,7 @@
       classes: "govuk-button--secondary",
       attributes: { id: "sign-in-admin", "data-action": "sign-in", "data-role": "admin" }
     }) }}
+    </div>
   </div>
 </div>
 {% endblock %}

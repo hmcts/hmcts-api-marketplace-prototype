@@ -8,6 +8,7 @@
 {% set breadcrumbs = [{ text: "Home", href: "/" }, { text: "Admin", href: "/admin" }] %}
 
 {% block content %}
+<div data-feature-page="admin-dashboard">
 {% include "admin/denied.njk" %}
 
 <div id="admin-content" hidden>
@@ -27,5 +28,6 @@
 
   <p class="govuk-body" id="admin-results-count"></p>
   <div id="admin-users"></div>
+</div>
 </div>
 {% endblock %}

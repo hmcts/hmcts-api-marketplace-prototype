@@ -8,6 +8,7 @@
 {% set breadcrumbs = [{ text: "Home", href: "/" }, { text: "Admin", href: "/admin" }, { text: "Applications", href: "/admin/applications" }] %}
 
 {% block content %}
+<div data-feature-page="admin-dashboard">
 {% include "admin/denied.njk" %}
 
 <div id="admin-content" hidden>
@@ -25,5 +26,6 @@
 
   <h2 class="govuk-heading-l">Production credentials request</h2>
   <div id="admin-application-request"></div>
+</div>
 </div>
 {% endblock %}

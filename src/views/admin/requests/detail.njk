@@ -7,6 +7,7 @@
 {% set breadcrumbs = [{ text: "Home", href: "/" }, { text: "Admin", href: "/admin" }, { text: "Production requests", href: "/admin/requests" }] %}
 
 {% block content %}
+<div data-feature-page="admin-dashboard">
 {% include "admin/denied.njk" %}
 
 <div id="admin-content" hidden>
@@ -23,5 +24,6 @@
 
   <h2 class="govuk-heading-m">Their answers</h2>
   {{ govukSummaryList({ rows: [], attributes: { id: "admin-request-answers" } }) }}
+</div>
 </div>
 {% endblock %}
