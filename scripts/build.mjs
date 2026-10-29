@@ -14,6 +14,16 @@ const env = nunjucks.configure([views, govuk], { autoescape: true, trimBlocks: t
 
 env.addGlobal('govukRebrand', true)
 env.addGlobal('marketplaceSiteUrl', '/')
+// What the production credentials form gets from its controller in the real service.
+// Kept in step with CALL_VOLUMES and DATA_ANSWER_MAX_LENGTH in ProductionCredentialsController.ts.
+env.addGlobal('callVolumes', [
+  { value: 'low', text: 'Low', hint: { text: 'Under 1,000 calls per day' } },
+  { value: 'medium', text: 'Medium', hint: { text: '1,000 to 100,000 calls per day' } },
+  { value: 'high', text: 'High', hint: { text: 'Over 100,000 calls per day' } }
+])
+env.addGlobal('dataAnswerMaxLength', 2000)
+env.addGlobal('answers', {})
+env.addGlobal('errorFor', {})
 // "2 October 2026" from a stored ISO timestamp, as the real service formats dates.
 env.addFilter('date', value => {
   const parsed = new Date(value)

@@ -29,7 +29,7 @@
         actions: { items: [{ href: "/account/production-credentials", text: "Change", visuallyHiddenText: row.key | lower }] }
       }), summaryRows) %}
     {% endfor %}
-    {{ govukSummaryList({ rows: summaryRows }) }}
+    {{ govukSummaryList({ rows: summaryRows, attributes: { id: "production-answers" } }) }}
 
     <form method="post" action="/account/production-credentials/check-answers" novalidate>
       {{ govukButton({ text: "Accept and submit", attributes: { id: "production-submit" } }) }}

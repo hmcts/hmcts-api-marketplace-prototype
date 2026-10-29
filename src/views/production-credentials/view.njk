@@ -14,18 +14,18 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <span class="govuk-caption-l">Production credentials request</span>
-    <h1 class="govuk-heading-xl">{{ request.reference }}</h1>
+    <h1 class="govuk-heading-xl" id="request-reference">{{ request.reference }}</h1>
 
     <p class="govuk-body">
       Status: {{ govukTag({ text: status, classes: "govuk-tag--blue", attributes: { id: "request-status" } }) }}
-      <br>Submitted {{ request.submittedAt | date }}
+      <br>Submitted <span id="request-submitted">{{ request.submittedAt | date }}</span>
     </p>
 
     {% set summaryRows = [] %}
     {% for row in rows %}
       {% set summaryRows = (summaryRows.push({ key: { text: row.key }, value: { text: row.value } }), summaryRows) %}
     {% endfor %}
-    {{ govukSummaryList({ rows: summaryRows }) }}
+    {{ govukSummaryList({ rows: summaryRows, attributes: { id: "request-answers" } }) }}
 
     <h2 class="govuk-heading-m">What the statuses mean</h2>
     <dl class="govuk-summary-list">
