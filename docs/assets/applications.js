@@ -1,4 +1,4 @@
-import { applications, answers } from './store.js'
+import { applications, answers } from './store.js?v=1748134bc1'
 
 const JOURNEY = 'new-application'
 

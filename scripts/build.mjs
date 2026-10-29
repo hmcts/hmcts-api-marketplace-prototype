@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile, cp, rm } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { mkdir, readFile, readdir, writeFile, cp, rm } from 'node:fs/promises'
 import { dirname, join, relative } from 'node:path'
 import nunjucks from 'nunjucks'
 import * as sass from 'sass'
@@ -57,13 +58,42 @@ const features = JSON.parse(await readFile(join(root, 'src/data/features.json'),
 // The real service lists APIs from the catalogue backend. These seed the checkboxes instead.
 const apiItems = JSON.parse(await readFile(join(root, 'src/data/apis.json'), 'utf8'))
 
+const css = sass.compile(join(root, 'src/assets/scss/main.scss'), {
+  loadPaths: [govuk, join(root, 'node_modules')],
+  style: 'compressed',
+  quietDeps: true
+})
+const scriptsDir = join(root, 'src/assets/javascripts')
+const scripts = await Promise.all((await readdir(scriptsDir)).sort().map(async name => ({ name, source: await readFile(join(scriptsDir, name), 'utf8') })))
+
+// GitHub Pages lets browsers keep assets for 10 minutes, so after a merge people could get new
+// pages with old scripts. Every asset link carries a hash of the assets instead: it changes only
+// when they do, and a browser then fetches them afresh.
+const assetVersion = createHash('sha256')
+  .update(css.css)
+  .update(JSON.stringify(features))
+  .update(await readFile(join(root, 'src/data/admin-seed.json')))
+  .update(await readFile(join(govuk, 'govuk/govuk-frontend.min.js')))
+  .update(scripts.map(file => file.name + file.source).join('\n'))
+  .digest('hex')
+  .slice(0, 10)
+
+function versionAssets (html) {
+  return html.replace(/(assets\/main\.(?:css|js))"/g, `$1?v=${assetVersion}"`)
+}
+
+// The scripts import each other as siblings, so those imports carry the version too.
+function versionImports (source) {
+  return source.replace(/((?:from|import) '\.\/[^']+\.js)'/g, `$1?v=${assetVersion}'`)
+}
+
 await rm(out, { recursive: true, force: true })
 await mkdir(out, { recursive: true })
 
 for (const route of routes) {
   const prefix = depth(route.url)
   const context = { ...globals, ...(await locale(route.locale)), apiItems, basePath: prefix, assetPath: prefix + 'assets', currentUrl: route.url }
-  const rendered = relativise(env.render(route.view, context), prefix)
+  const rendered = versionAssets(relativise(env.render(route.view, context), prefix))
   const target = route.url.endsWith('.html')
     ? join(out, route.url)
     : join(out, route.url, 'index.html')
@@ -71,16 +101,13 @@ for (const route of routes) {
   await writeFile(target, rendered)
 }
 
-const css = sass.compile(join(root, 'src/assets/scss/main.scss'), {
-  loadPaths: [govuk, join(root, 'node_modules')],
-  style: 'compressed',
-  quietDeps: true
-})
 await mkdir(join(out, 'assets'), { recursive: true })
 await writeFile(join(out, 'assets/main.css'), css.css)
 
 await cp(join(govuk, 'govuk/assets'), join(out, 'assets'), { recursive: true })
-await cp(join(root, 'src/assets/javascripts'), join(out, 'assets'), { recursive: true })
+for (const file of scripts) {
+  await writeFile(join(out, 'assets', file.name), versionImports(file.source))
+}
 // The feature list as a module, so features.js has it before any page script runs.
 await writeFile(join(out, 'assets/feature-list.js'), `export default ${JSON.stringify(features, null, 2)}\n`)
 // Made-up users, applications and requests for the admin pages, fetched by admin.js.

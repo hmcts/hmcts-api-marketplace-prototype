@@ -1,4 +1,4 @@
-import { features } from './features.js'
+import { features } from './features.js?v=1748134bc1'
 
 function escapeHtml (value) {
   const div = document.createElement('div')

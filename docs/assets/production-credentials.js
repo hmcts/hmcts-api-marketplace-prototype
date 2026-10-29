@@ -1,4 +1,4 @@
-import { applications, answers, productionRequests } from './store.js'
+import { applications, answers, productionRequests } from './store.js?v=1748134bc1'
 
 // Stands in for ProductionCredentialsController in web-api-marketplace: the same questions,
 // checks and messages, with the session and the backend replaced by browser storage.
