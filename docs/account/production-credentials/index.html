@@ -236,11 +236,139 @@ data-module="govuk-service-navigation"
       every request, then creates the client ID, secret and subscription keys and sends them to you securely.
     </p>
 
-          <p class="govuk-body" id="no-applications">
+    
+      <p class="govuk-body" id="no-applications">
         You need an application that has been tested in the sandbox first.
         <a class="govuk-link" href="../../account/applications/new">Create an application</a>.
       </p>
-    
+
+    <form method="post" action="../../account/production-credentials" novalidate id="production-form" hidden>
+
+      <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="application-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      Which application is going live?
+    </legend>
+    <div id="application-hint" class="govuk-hint">
+    Production credentials cover the same APIs as the application you choose.
+  </div>
+  <div class="govuk-radios" data-module="govuk-radios">
+              </div>
+</fieldset>
+</div>
+
+
+      <div class="govuk-form-group">
+  <label class="govuk-label govuk-label--m" for="organisation">
+    Organisation or team name
+  </label>
+  <input                                                                                                                                                                                                                                                                                                                                                                 class="govuk-input" id="organisation" name="organisation" type="text" autocomplete="organization">
+</div>
+
+
+        <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" role="group" aria-describedby="go-live-hint">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        When do you plan to go live?
+      </legend>
+      <div id="go-live-hint" class="govuk-hint">
+      For example, 27 3 2027
+    </div>
+    <div class="govuk-date-input" id="go-live">
+              <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="go-live-day">
+            Day
+          </label>
+          <input                                                                                                                                                                                                                                                                                                                                                                 class="govuk-input govuk-date-input__input govuk-input--width-2" id="go-live-day" name="go-live-day" type="text" inputmode="numeric">
+        </div>
+      </div>
+          <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="go-live-month">
+            Month
+          </label>
+          <input                                                                                                                                                                                                                                                                                                                                                                 class="govuk-input govuk-date-input__input govuk-input--width-2" id="go-live-month" name="go-live-month" type="text" inputmode="numeric">
+        </div>
+      </div>
+          <div class="govuk-date-input__item">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-date-input__label" for="go-live-year">
+            Year
+          </label>
+          <input                                                                                                                                                                                                                                                                                                                                                                 class="govuk-input govuk-date-input__input govuk-input--width-4" id="go-live-year" name="go-live-year" type="text" inputmode="numeric">
+        </div>
+      </div>
+            </div>
+  </fieldset>
+</div>
+
+
+      <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      Expected call volume in production
+    </legend>
+    <div class="govuk-radios" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+      <input class="govuk-radios__input" id="call-volume" name="call-volume" type="radio" value="low" aria-describedby="call-volume-item-hint">
+      <label class="govuk-label govuk-radios__label" for="call-volume">
+        Low
+      </label>
+            <div id="call-volume-item-hint" class="govuk-hint govuk-radios__hint">
+        Under 1,000 calls per day
+      </div>
+          </div>
+                                  <div class="govuk-radios__item">
+      <input class="govuk-radios__input" id="call-volume-2" name="call-volume" type="radio" value="medium" aria-describedby="call-volume-2-item-hint">
+      <label class="govuk-label govuk-radios__label" for="call-volume-2">
+        Medium
+      </label>
+            <div id="call-volume-2-item-hint" class="govuk-hint govuk-radios__hint">
+        1,000 to 100,000 calls per day
+      </div>
+          </div>
+                                  <div class="govuk-radios__item">
+      <input class="govuk-radios__input" id="call-volume-3" name="call-volume" type="radio" value="high" aria-describedby="call-volume-3-item-hint">
+      <label class="govuk-label govuk-radios__label" for="call-volume-3">
+        High
+      </label>
+            <div id="call-volume-3-item-hint" class="govuk-hint govuk-radios__hint">
+        Over 100,000 calls per day
+      </div>
+          </div>
+                </div>
+</fieldset>
+</div>
+
+
+      <div class="govuk-form-group govuk-character-count"                                                                                                                               data-module="govuk-character-count" data-maxlength="2000">
+  <label class="govuk-label govuk-label--m" for="data-request">
+    Please provide a description of the data request, how you plan to use this data for each API selected in the above application, whether this data will be used in conjunction with any other data (if so, how), and an explanation of why this data is required.
+  </label>
+  <textarea class="govuk-textarea govuk-js-character-count" id="data-request" name="data-request" rows="5" aria-describedby="data-request-info"></textarea>
+  <div id="data-request-info" class="govuk-hint govuk-character-count__message">
+    You can enter up to 2000 characters
+  </div>
+</div>
+
+
+      <div class="govuk-form-group govuk-character-count"                                                                                                                               data-module="govuk-character-count" data-maxlength="2000">
+  <label class="govuk-label govuk-label--m" for="proposed-outputs">
+    Please describe any proposed outputs from this data use for each API selected in the above application, including what the output aims to achieve, and how/where it will be shared.
+  </label>
+  <textarea class="govuk-textarea govuk-js-character-count" id="proposed-outputs" name="proposed-outputs" rows="5" aria-describedby="proposed-outputs-info"></textarea>
+  <div id="proposed-outputs-info" class="govuk-hint govuk-character-count__message">
+    You can enter up to 2000 characters
+  </div>
+</div>
+
+
+              <button type="submit" class="govuk-button" data-module="govuk-button"                                               id="production-continue">
+  Continue
+</button>
+    </form>
+
   </div>
 </div>
         </main>

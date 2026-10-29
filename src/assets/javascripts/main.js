@@ -1,6 +1,7 @@
 import { initAll } from './govuk-frontend.min.js'
 import { user } from './store.js'
 import './applications.js'
+import './production-credentials.js'
 
 initAll()
 

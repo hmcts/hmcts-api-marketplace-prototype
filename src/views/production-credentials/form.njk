@@ -28,14 +28,14 @@
       every request, then creates the client ID, secret and subscription keys and sends them to you securely.
     </p>
 
-    {% if not applicationItems.length %}
+    {# The real service renders one branch from the user's applications. These pages are built with
+       no data, so both ship and production-credentials.js shows the right one. #}
       <p class="govuk-body" id="no-applications">
         You need an application that has been tested in the sandbox first.
         <a class="govuk-link" href="/account/applications/new">Create an application</a>.
       </p>
-    {% else %}
 
-    <form method="post" action="/account/production-credentials" novalidate>
+    <form method="post" action="/account/production-credentials" novalidate id="production-form" hidden>
 
       {{ govukRadios({
         name: "application",
@@ -96,7 +96,6 @@
 
       {{ govukButton({ text: "Continue", attributes: { id: "production-continue" } }) }}
     </form>
-    {% endif %}
 
   </div>
 </div>

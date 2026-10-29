@@ -79,6 +79,42 @@ export const applications = {
   }
 }
 
+const REQUESTS_KEY = 'ampPrototypeProductionRequests'
+// The backend's reference alphabet: no 0, 1, I or O, so a reference can be read out.
+const REFERENCE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+
+function newReference () {
+  const suffix = Array.from(crypto.getRandomValues(new Uint8Array(8)))
+    .map(b => REFERENCE_ALPHABET[b % REFERENCE_ALPHABET.length])
+    .join('')
+  return 'PCR-' + suffix
+}
+
+// Production credentials requests. The real service stores them in the backend, which allows
+// one per application, and nothing ever moves them on from Submitted: review is offline.
+export const productionRequests = {
+  all () {
+    return read(REQUESTS_KEY, [])
+  },
+  find (reference) {
+    return this.all().find(request => request.reference === reference) || null
+  },
+  forApplication (applicationId) {
+    return this.all().find(request => request.applicationId === applicationId) || null
+  },
+  create (details) {
+    if (this.forApplication(details.applicationId)) return null
+    const request = {
+      ...details,
+      reference: newReference(),
+      status: 'SUBMITTED',
+      submittedAt: new Date().toISOString()
+    }
+    write(REQUESTS_KEY, this.all().concat(request))
+    return request
+  }
+}
+
 // Multi-step journeys keep their answers here until the final confirmation.
 export const answers = {
   get (journey) {
