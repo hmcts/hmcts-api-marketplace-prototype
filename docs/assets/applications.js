@@ -1,6 +1,26 @@
-import { applications, answers } from './store.js?v=1748134bc1'
+import { applications, answers, productionRequests } from './store.js?v=4f1444f871'
 
 const JOURNEY = 'new-application'
+// applications.maxPerUser in the real service's config.
+const MAX_APPLICATIONS = 5
+const AT_LIMIT_KEY = 'ampPrototypeAtLimitNotice'
+const CREATE_MESSAGE = 'Creating your application. This can take up to a minute'
+
+function atLimitMessage () {
+  return `You can have up to ${MAX_APPLICATIONS} ${MAX_APPLICATIONS === 1 ? 'application' : 'applications'}. Delete an application you no longer need before you add another.`
+}
+
+function atLimit () {
+  return applications.all().length >= MAX_APPLICATIONS
+}
+
+// The real service sends someone at the limit back to the list with an "Important" notice.
+function sendBackAtLimit (listUrl) {
+  try {
+    window.sessionStorage.setItem(AT_LIMIT_KEY, '1')
+  } catch (e) { /* the list still says why */ }
+  window.location.href = listUrl
+}
 
 function page () {
   const path = window.location.pathname.replace(/index\.html$/, '')
@@ -22,6 +42,7 @@ function renderList () {
   const container = document.getElementById('applications-list')
   const empty = document.getElementById('applications-empty')
   if (!container) return
+  showLimit()
   const all = applications.all()
   empty.hidden = all.length > 0
   if (!all.length) { container.innerHTML = ''; return }
@@ -45,6 +66,45 @@ function renderList () {
       </thead>
       <tbody class="govuk-table__body">${rows}</tbody>
     </table>`
+}
+
+function showLimit () {
+  const inset = document.getElementById('applications-at-limit')
+  const add = document.getElementById('add-application')
+  if (!inset || !add) return
+  const reached = atLimit()
+  inset.hidden = !reached
+  add.hidden = reached
+  if (reached) inset.textContent = atLimitMessage()
+
+  let notice = false
+  try {
+    notice = window.sessionStorage.getItem(AT_LIMIT_KEY) === '1'
+    window.sessionStorage.removeItem(AT_LIMIT_KEY)
+  } catch (e) { /* as above */ }
+  if (notice && reached) {
+    document.querySelector('h1').insertAdjacentHTML('beforebegin', `
+      <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" id="notice">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Important</h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">${escapeHtml(atLimitMessage())}</p>
+        </div>
+      </div>`)
+  }
+}
+
+// Says the create is running, as the real service does while Entra and APIM answer. Creating
+// here is instant, so it is only seen for a moment.
+function reportCreateInProgress (form) {
+  const status = document.getElementById('create-status')
+  const message = document.getElementById('create-status-message')
+  const dots = document.getElementById('create-status-dots')
+  if (!status || !message || !dots) return
+  message.textContent = CREATE_MESSAGE
+  status.hidden = false
+  dots.textContent = '...'
 }
 
 function captureStep (nextUrl, read) {
@@ -79,6 +139,11 @@ function renderCheckAnswers () {
   if (!form) return
   form.addEventListener('submit', event => {
     event.preventDefault()
+    if (atLimit()) {
+      sendBackAtLimit('../../')
+      return
+    }
+    reportCreateInProgress(form)
     const created = applications.create(saved)
     answers.clear(JOURNEY)
     window.location.href = `../confirmation/?id=${created.id}`
@@ -149,6 +214,18 @@ function renderDetail (application) {
     ).join('')
   }
 
+  const request = productionRequests.forApplication(application.id)
+  const asked = document.getElementById('production-request')
+  const ask = document.getElementById('request-production')
+  if (asked && ask) {
+    asked.hidden = !request
+    ask.hidden = !!request
+    if (request) {
+      set('production-request-reference', request.reference)
+      document.getElementById('view-production-request').setAttribute('href', `../../production-credentials/view/?reference=${request.reference}`)
+    }
+  }
+
   const remove = document.getElementById('delete-application')
   if (remove) {
     remove.addEventListener('click', event => {
@@ -170,6 +247,7 @@ function requireApplication (listUrl) {
 
 const current = page()
 if (current === '') renderList()
+if ((current === 'new' || current === 'new/details') && atLimit()) sendBackAtLimit(current === 'new' ? '../' : '../../')
 if (current === 'new/details') captureStep('../apis/', form => {
   const name = form.elements.name.value.trim()
   if (!name) return null

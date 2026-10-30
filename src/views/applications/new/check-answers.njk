@@ -32,8 +32,16 @@
       You will see the client secret once only.
     </p>
 
-    <form method="post" action="/account/applications/new/check-answers" novalidate>
-      {{ govukButton({ text: "Create application", attributes: { id: "create-application" } }) }}
+    <form method="post" action="/account/applications/new/check-answers" novalidate id="create-application-form">
+      {{ govukButton({
+        text: "Create application",
+        preventDoubleClick: true,
+        attributes: { id: "create-application" }
+      }) }}
+      {#- Filled in and revealed when the form is submitted, so the wait is not silent. The dots
+          move while it waits and are hidden from readers, who would otherwise hear each change. -#}
+      <p class="govuk-body" id="create-status" role="status" aria-live="polite" hidden><span
+        id="create-status-message"></span><span id="create-status-dots" aria-hidden="true"></span></p>
     </form>
     <p class="govuk-body"><a class="govuk-link" href="/account/applications">Cancel</a></p>
   </div>

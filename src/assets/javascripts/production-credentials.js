@@ -57,8 +57,11 @@ function goLiveDate (values) {
 
 function validate (values) {
   const errors = []
-  if (!applications.find(values.application)) {
+  const chosen = applications.find(values.application)
+  if (!chosen) {
     errors.push({ name: 'application', text: 'Select the application you need production credentials for' })
+  } else if (productionRequests.forApplication(chosen.id)) {
+    errors.push({ name: 'application', text: `${chosen.name} already has a production access request` })
   }
   if (!values.organisation) {
     errors.push({ name: 'organisation', text: 'Enter your organisation or team name' })
@@ -158,9 +161,8 @@ function renderForm () {
   const none = document.getElementById('no-applications')
   if (!form || !none) return
 
-  // Every application is offered, as on master. The backend allows one production request per
-  // application, and the real service only finds out on submit (see renderCheckAnswers).
-  const choices = applications.all()
+  // Only applications without a production request are offered: the backend allows one each.
+  const choices = applications.all().filter(application => !productionRequests.forApplication(application.id))
   none.hidden = choices.length > 0
   form.hidden = choices.length === 0
   if (!choices.length) return
@@ -245,7 +247,7 @@ function renderCheckAnswers () {
       const column = form.parentElement
       clearErrors(column)
       column.querySelector('h1').insertAdjacentHTML('beforebegin',
-        errorSummaryHtml([{ name: 'production-submit', text: 'Your request could not be submitted. Try again in a few minutes.' }]))
+        errorSummaryHtml([{ name: 'production-submit', text: `${application.name} already has a production access request.` }]))
       column.querySelector('.govuk-error-summary').focus()
       return
     }
