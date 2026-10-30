@@ -47,7 +47,9 @@ function plural (count, one, many) {
 
 // Everything the admin pages show, with the example user's local data folded in as one more user.
 async function loadData () {
-  const seed = await fetch(new URL('admin-seed.json', import.meta.url)).then(response => response.json())
+  // Keeps the ?v= this script was loaded with, so a new build fetches the seed afresh too.
+  const seedUrl = new URL('admin-seed.json' + new URL(import.meta.url).search, import.meta.url)
+  const seed = await fetch(seedUrl).then(response => response.json())
 
   const localApps = applications.all().map(application => ({ ...application, ownerId: DUMMY_USER.oid }))
   const localRequests = productionRequests.all().map(request => ({ ...request, ownerId: DUMMY_USER.oid }))

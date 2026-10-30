@@ -1,5 +1,5 @@
-import { user, applications, productionRequests, DUMMY_USER } from './store.js'
-import { features } from './features.js'
+import { user, applications, productionRequests, DUMMY_USER } from './store.js?v=4f1444f871'
+import { features } from './features.js?v=4f1444f871'
 
 // The admin pages. The real service has no admin role or cross-user reads yet, so this is a
 // read-only design: made-up users, applications and requests from admin-seed.json, plus the
@@ -47,7 +47,9 @@ function plural (count, one, many) {
 
 // Everything the admin pages show, with the example user's local data folded in as one more user.
 async function loadData () {
-  const seed = await fetch(new URL('admin-seed.json', import.meta.url)).then(response => response.json())
+  // Keeps the ?v= this script was loaded with, so a new build fetches the seed afresh too.
+  const seedUrl = new URL('admin-seed.json' + new URL(import.meta.url).search, import.meta.url)
+  const seed = await fetch(seedUrl).then(response => response.json())
 
   const localApps = applications.all().map(application => ({ ...application, ownerId: DUMMY_USER.oid }))
   const localRequests = productionRequests.all().map(request => ({ ...request, ownerId: DUMMY_USER.oid }))
