@@ -25,10 +25,12 @@ and not the handover:
 Read them alongside; don't link them in (no submodules, no shared packages). Local clone paths are in
 `CLAUDE.local.md`.
 
-**Ported from:** `web-api-marketplace` `master` at `1a792f3` (28 October 2026). PR #79 didn't record
-the commit; it was matched by comparing the views. Of the 51 views in both repos, 39 were identical; the
-other 12 were changed to fake the backend (PR #79 lists them). Update this line whenever the prototype is
-re-synced.
+**In step with:** `web-api-marketplace` `master` at `9a33edd` (29 October 2026). First ported from
+`1a792f3` (28 October 2026) in PR #79; re-synced with `9a33edd` in PR #89 (application limit, one
+production request per application, the "creating" message, producer guides off the documentation
+index). Update this line whenever the prototype is re-synced. To see what has changed since, run
+`git diff 9a33edd origin/master -- src/main/views src/main/controllers src/main/services` in the
+`web-api-marketplace` clone.
 
 **Before prototyping a change,** compare the pages involved with the same files on `web-api-marketplace`
 `master`. If the real service has moved on, bring the prototype's pages up to date first, as a separate

@@ -243,11 +243,19 @@ data-module="govuk-service-navigation"
   Add or remove APIs
 </a>
 
-    <p class="govuk-body">
+    <h2 class="govuk-heading-m">Going live</h2>
+    
+    <p class="govuk-body" id="production-request" hidden>
+      You have asked for production credentials for this application.
+      <a class="govuk-link" href="../../production-credentials/view/" id="view-production-request">View production request <span id="production-request-reference"></span></a>.
+    </p>
+    <p class="govuk-body" id="request-production">
       When this application has been tested,
       <a class="govuk-link" href="../../production-credentials/" id="going-live">request production credentials</a> for it.
     </p>
 
+    <h2 class="govuk-heading-m">Delete this application</h2>
+    <p class="govuk-body">Its client ID, secret and subscription keys stop working straight away.</p>
               <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button"                                               id="delete-application">
   Delete application
 </button>
