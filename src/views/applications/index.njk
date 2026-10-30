@@ -1,6 +1,7 @@
 {% extends "template.njk" %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageTitle = "Manage applications - HMCTS API Marketplace - GOV.UK" %}
@@ -28,6 +29,8 @@
       access for it. Your request is reviewed by the HMCTS Data Access Panel. If it is approved, your
       production credentials are emailed to you.
     </p>
+    {# The real service decides this from the backend. Here applications.js shows one or the other. #}
+    {{ govukInsetText({ text: "", attributes: { id: "applications-at-limit", hidden: true } }) }}
     {{ govukButton({ text: "Add new application", href: "/account/applications/new", attributes: { id: "add-application" } }) }}
   </div>
 </div>
