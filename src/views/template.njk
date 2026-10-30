@@ -131,9 +131,11 @@
 {% endblock %}
 
 {% block beforeContent %}
+  {# Not in the real service: the tag is red, so nobody mistakes the prototype for it. #}
   {{ govukPhaseBanner({
     tag: {
-      text: phaseTag
+      text: phaseTag,
+      classes: "govuk-tag--red"
     },
     html: feedback
   }) }}
