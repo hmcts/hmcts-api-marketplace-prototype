@@ -25,13 +25,14 @@ and not the handover:
 Read them alongside; don't link them in (no submodules, no shared packages). Local clone paths are in
 `CLAUDE.local.md`.
 
-**In step with:** `web-api-marketplace` `master` at `6c3a9a7` (3 November 2026). First ported from
+**In step with:** `web-api-marketplace` `master` at `b641dd1` (5 November 2026). First ported from
 `1a792f3` (28 October 2026) in PR #79; re-synced with `9a33edd` in PR #89 (application limit, one
 production request per application, the "creating" message, producer guides off the documentation
 index), then with `50036b2` (reviewers called the Data Access Team, not the Data Access Panel), then
-with `6c3a9a7` (an outcome within 5 working days; the request page's statuses list removed). Update
+with `6c3a9a7` (an outcome within 5 working days; the request page's statuses list removed), then
+with `b641dd1` (browsing the catalogue and Try it now as separate Get started steps). Update
 this line whenever the prototype is re-synced. To see what has changed since, run
-`git diff 6c3a9a7 origin/master -- src/main/views src/main/controllers src/main/services` in the
+`git diff b641dd1 origin/master -- src/main/views src/main/controllers src/main/services` in the
 `web-api-marketplace` clone.
 
 **Before prototyping a change,** compare the pages involved with the same files on `web-api-marketplace`
