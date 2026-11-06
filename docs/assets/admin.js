@@ -1,5 +1,5 @@
-import { user, applications, productionRequests, DUMMY_USER } from './store.js?v=4f1444f871'
-import { features } from './features.js?v=4f1444f871'
+import { user, applications, productionRequests, DUMMY_USER } from './store.js?v=7e57bff276'
+import { features } from './features.js?v=7e57bff276'
 
 // The admin pages. The real service has no admin role or cross-user reads yet, so this is a
 // read-only design: made-up users, applications and requests from admin-seed.json, plus the

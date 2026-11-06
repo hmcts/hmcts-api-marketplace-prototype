@@ -1,34 +1,20 @@
-{#- How to use this application's credentials, as curl commands: the token request always, SLC calls when it has SLC. -#}
+{#- How to use this application's credentials with one API (i): the token request as a curl command, then a link to try the API in the developer portal. -#}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {{ govukSummaryList({
   rows: [
-    { key: { text: "Publisher ID (scope)" }, value: { html: '<span class="apim-credential" id="publisher-id">' + (token.publisherId | escape) + '</span>' } }
+    { key: { text: "Publisher ID (scope)" }, value: { html: '<span class="apim-credential" id="publisher-id-' + i.apiName + '">' + (i.token.publisherId | escape) + '</span>' } }
   ]
 }) }}
 
 <h3 class="govuk-heading-s">Get an access token</h3>
 <p class="govuk-body">Request a token from Microsoft Entra ID with the OAuth 2.0 client credentials flow:</p>
-<pre class="apim-code" id="token-request"><code>curl --request POST \
-  --url {{ token.url }} \
+<pre class="apim-code" id="token-request-{{ i.apiName }}"><code>curl --request POST \
+  --url {{ i.token.url }} \
   --header 'Content-Type: application/x-www-form-urlencoded' \
   --data grant_type=client_credentials \
-  --data client_id={{ token.clientId }} \
-  --data 'client_secret={{ token.clientSecret }}' \
-  --data scope={{ token.scope }}</code></pre>
+  --data client_id={{ i.token.clientId }} \
+  --data 'client_secret={{ i.token.clientSecret }}' \
+  --data scope={{ i.token.scope }}</code></pre>
 
-{% if slc %}
-  <h3 class="govuk-heading-s">Call the Scheduling and Listing Court Schedule API</h3>
-  <p class="govuk-body">Send the access token with each request:</p>
-  <pre class="apim-code" id="slc-request"><code>curl --request GET \
-  --url {{ slc.courtScheduleUrl }} \
-  --header 'Accept: application/json' \
-  --header 'Authorization: Bearer &lt;token&gt;' \
-  --header 'Ocp-Apim-Subscription-Key: &lt;apim_subscription_key&gt;'</code></pre>
-
-  <h3 class="govuk-heading-s">Find a case URN to try</h3>
-  <p class="govuk-body">List the test scenarios to get a case URN to use in the request above:</p>
-  <pre class="apim-code" id="scenarios-request"><code>curl --request GET \
-  --url {{ slc.scenariosUrl }} \
-  --header 'Accept: application/json' \
-  --header 'Ocp-Apim-Subscription-Key: &lt;apim_subscription_key&gt;'</code></pre>
-{% endif %}
+<h3 class="govuk-heading-s">Run try it now in developer portal</h3>
+<p class="govuk-body"><a class="govuk-link" id="api-reference-{{ i.apiName }}" href="{{ i.docsUrl }}" rel="noreferrer noopener" target="_blank">{{ i.apiTitle }} API reference (opens in new tab)</a></p>

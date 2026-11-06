@@ -1,4 +1,4 @@
-import { applications, answers, productionRequests } from './store.js?v=4f1444f871'
+import { applications, answers, productionRequests } from './store.js?v=7e57bff276'
 
 const JOURNEY = 'new-application'
 // applications.maxPerUser in the real service's config.
@@ -187,6 +187,47 @@ function renderConfirmation (application, secret) {
   if (view) view.setAttribute('href', `../../detail/?id=${application.id}`)
 }
 
+// A made-up Entra application ID for an API, the same each time. The real service reads each
+// API's from the marketplace catalogue.
+function publisherId (apiValue) {
+  let hex = ''
+  for (let i = 0; hex.length < 32; i++) {
+    hex += ((apiValue.charCodeAt(i % apiValue.length) * (i + 7)) % 256).toString(16).padStart(2, '0')
+  }
+  hex = hex.slice(0, 32)
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
+}
+
+// applications/instructions.njk in the real service, folded away under each API. The tenant and
+// secret stay placeholders. The real reference link goes to the developer portal; the prototype's
+// APIs are made up, so it goes to the catalogue page instead.
+function instructionsHtml (application, api) {
+  const scope = `${publisherId(api.value)}/.default`
+  const title = escapeHtml(api.text)
+  return `
+    <details class="govuk-details" id="api-instructions-${api.value}">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">How to get an access token and call ${title}</span>
+      </summary>
+      <div class="govuk-details__text">
+        <dl class="govuk-summary-list">
+          ${row('Publisher ID (scope)', `<span class="apim-credential" id="publisher-id-${api.value}">${publisherId(api.value)}</span>`)}
+        </dl>
+        <h3 class="govuk-heading-s">Get an access token</h3>
+        <p class="govuk-body">Request a token from Microsoft Entra ID with the OAuth 2.0 client credentials flow:</p>
+        <pre class="apim-code" id="token-request-${api.value}"><code>curl --request POST \\
+  --url https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token \\
+  --header 'Content-Type: application/x-www-form-urlencoded' \\
+  --data grant_type=client_credentials \\
+  --data client_id=${application.clientId} \\
+  --data 'client_secret=&lt;client_secret&gt;' \\
+  --data scope=${scope}</code></pre>
+        <h3 class="govuk-heading-s">Run try it now in developer portal</h3>
+        <p class="govuk-body"><a class="govuk-link" id="api-reference-${api.value}" href="../../../api-catalogue/detail/?api=${api.value}" rel="noreferrer noopener" target="_blank">${title} API reference (opens in new tab)</a></p>
+      </div>
+    </details>`
+}
+
 function renderDetail (application) {
   document.querySelectorAll('[data-application-name]').forEach(el => { el.textContent = application.name })
   document.title = application.name + ' - Manage applications - HMCTS API Marketplace - GOV.UK'
@@ -212,6 +253,11 @@ function renderDetail (application) {
     apis.innerHTML = application.apis.map(api =>
       row(api.text, `<span class="apim-credential">${application.clientId.replace(/-/g, '').slice(0, 24)}</span>`)
     ).join('')
+  }
+
+  const instructions = document.getElementById('api-instructions')
+  if (instructions) {
+    instructions.innerHTML = application.apis.map(api => instructionsHtml(application, api)).join('')
   }
 
   const request = productionRequests.forApplication(application.id)

@@ -27,6 +27,9 @@
     <h2 class="govuk-heading-m">APIs</h2>
     <p class="govuk-body" id="apis-empty" hidden>This application has no APIs yet.</p>
     <dl class="govuk-summary-list" id="application-apis"></dl>
+    {# The real service folds each API's instructions (applications/instructions.njk) into a row
+       under that API in its table. Here applications.js adds them below the list, one per API. #}
+    <div id="api-instructions"></div>
 
     {{ govukButton({
       text: "Add or remove APIs",
