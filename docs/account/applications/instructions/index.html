@@ -4,14 +4,14 @@
       Publisher ID (scope)
     </dt>
     <dd class="govuk-summary-list__value">
-      <span class="apim-credential" id="publisher-id"></span>
+      <span class="apim-credential" id="publisher-id-undefined"></span>
     </dd>
       </div>
   </dl>
 
 <h3 class="govuk-heading-s">Get an access token</h3>
 <p class="govuk-body">Request a token from Microsoft Entra ID with the OAuth 2.0 client credentials flow:</p>
-<pre class="apim-code" id="token-request"><code>curl --request POST \
+<pre class="apim-code" id="token-request-"><code>curl --request POST \
   --url  \
   --header 'Content-Type: application/x-www-form-urlencoded' \
   --data grant_type=client_credentials \
@@ -19,3 +19,5 @@
   --data 'client_secret=' \
   --data scope=</code></pre>
 
+<h3 class="govuk-heading-s">Run try it now in developer portal</h3>
+<p class="govuk-body"><a class="govuk-link" id="api-reference-" href="" rel="noreferrer noopener" target="_blank"> API reference (opens in new tab)</a></p>
